@@ -1,4 +1,24 @@
-TLDR - docker-compose up
+# <span style="color:darkblue">*OWASP Mutillidae II*</span>
+
+## Project Announcements
+
+* Twitter: [https://twitter.com/webpwnized](https://twitter.com/webpwnized)
+
+## Tutorials
+
+* YouTube: [https://www.youtube.com/user/webpwnized](https://www.youtube.com/user/webpwnized)
+
+## Installation on Docker
+
+The following video tutorials explain how to bring up Mutillidae on a set of 5 containers running Apache/PHP, MySQL, OpenLDAP, PHPMyAdmin, and PHPLDAPAdmin
+* [How to Install Docker on Ubuntu](https://www.youtube.com/watch?v=Y_2JVREtDFk)
+* [How to Run Mutillidae on Docker](https://www.youtube.com/watch?v=9RH4l8ff-yg)
+
+## TLDR
+
+* docker-compose up
+
+## Instructions
 
 There are five containers in this project. 
 
