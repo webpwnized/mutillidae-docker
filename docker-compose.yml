@@ -1,16 +1,22 @@
+# Documentation: https://github.com/compose-spec/compose-spec/blob/master/spec.md
+
 version: '3.7'
 services:
 
   database:
-    build: ./database
-    image: mutillidae/database:latest
+    image: webpwnized/mutillidae:database
+    build: 
+        context: ./database
+        dockerfile: Dockerfile
     command: --default-authentication-plugin=mysql_native_password
 
   database_admin:
     depends_on:
     - database
-    image: mutillidae/database_admin:latest
-    build: ./database_admin
+    image: webpwnized/mutillidae:database_admin
+    build:
+        context: ./database_admin
+        dockerfile: Dockerfile
     ports:
     - 127.0.0.1:81:80
 
@@ -18,8 +24,10 @@ services:
     depends_on:
     - database
     - ldap
-    build: ./www
-    image: mutillidae/www:latest
+    image: webpwnized/mutillidae:www
+    build:
+        context: ./www
+        dockerfile: Dockerfile
     volumes:
     # Make the Apache log files on the image available to localhost
     - "./www/var-log-apache2/:/var/log/apache2/"
@@ -28,8 +36,10 @@ services:
     - 127.0.0.1:443:443
 
   ldap:
-    build: ./ldap
-    image: mutillidae/ldap:latest
+    image: webpwnized/mutillidae:ldap
+    build:
+        context: ./ldap
+        dockerfile: Dockerfile
     volumes:
       - ldap_data:/var/lib/ldap
       - ldap_config:/etc/ldap/slapd.d
@@ -37,8 +47,10 @@ services:
   ldap_admin:
     depends_on:
     - ldap
-    build: ./ldap_admin
-    image: mutillidae/ldap_admin:latest
+    image: webpwnized/mutillidae:ldap_admin
+    build:
+        context: ./ldap_admin          
+        dockerfile: Dockerfile
     ports:
     - 127.0.0.1:82:80
    
