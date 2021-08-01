@@ -1,6 +1,7 @@
-# Build mutillidae/www:latest
+#webpwnized/mutillidae:www
 
-FROM php:8.0.6-apache
+# Start with recent version of PHP with Apache 
+FROM php:8.0.9-apache
 
 # Update software packages
 RUN apt-get update
@@ -13,6 +14,9 @@ RUN git clone https://github.com/webpwnized/mutillidae.git /var/www/mutillidae
 
 # uninstall git
 RUN apt-get remove -y git
+
+# Remove the .htaccess file since the containers will use container network security rather than htaccess access control
+RUN rm /var/www/mutillidae/.htaccess
 
 # Change the hostname of the database server to the docker database hostname
 RUN sed -i 's/127.0.0.1/database/' /var/www/mutillidae/includes/database-config.inc
@@ -52,5 +56,6 @@ RUN a2enmod ssl
 RUN a2dissite 000-default
 RUN a2ensite mutillidae
 
+# Open ports 80,443 in the container firewall
 EXPOSE 80
 EXPOSE 443

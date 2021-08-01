@@ -1,7 +1,10 @@
-# mutillidae/ldap:latest
+# webpwnized/mutillidae:ldap
 
+# Not an official repo
+# Documentation: https://hub.docker.com/r/osixia/openldap
 FROM osixia/openldap
 
+# Set up the LDAP configuration
 ENV LDAP_ORGANISATION="Mutillidae"
 ENV LDAP_DOMAIN="mutillidae.local"
 ENV LDAP_ADMIN_PASSWORD="mutillidae"
