@@ -70,6 +70,7 @@ volumes:
   ldap_data:
   ldap_config:
 
+# Create network segments for the containers to use
 networks:
     webnet:
     datanet:
