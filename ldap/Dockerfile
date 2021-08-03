@@ -12,4 +12,4 @@ ENV LDAP_BASE_DN="dc=mutillidae,dc=local"
 ENV LDAP_TLS="false"
 
 # Patch the container
-RUN apt update && apt upgrade
+RUN apt update && apt -y upgrade

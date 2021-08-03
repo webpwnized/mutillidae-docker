@@ -13,7 +13,7 @@ ENV PMA_USER="root"
 ENV PMA_PASSWORD="mutillidae"
 
 # Patch the container
-RUN apt update && apt upgrade
+RUN apt update && apt -y upgrade
 
 # Open port 80 to the webserver
 EXPOSE 80

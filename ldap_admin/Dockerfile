@@ -9,7 +9,7 @@ ENV PHPLDAPADMIN_LDAP_HOSTS="ldap"
 ENV PHPLDAPADMIN_HTTPS="false"
 
 # Patch the container
-RUN apt update && apt upgrade
+RUN apt update && apt -y upgrade
 
 # Open port 80 through the firewall
 EXPOSE 80

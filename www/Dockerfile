@@ -52,7 +52,7 @@ RUN apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl
 RUN apt-get install -y dnsutils
 
 # Patch the container
-RUN apt upgrade
+RUN apt -y upgrade
 
 # Enable Apache modules and sites
 RUN a2enmod ssl

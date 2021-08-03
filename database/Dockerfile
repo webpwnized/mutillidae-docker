@@ -7,4 +7,4 @@ FROM mysql:latest
 ENV MYSQL_ROOT_PASSWORD="mutillidae"
 
 # Patch the container
-RUN apt update && apt upgrade
+RUN apt update && apt -y upgrade
