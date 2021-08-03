@@ -39,7 +39,6 @@ services:
       - 127.0.0.1:80:80
       - 127.0.0.1:443:443
     networks:
-      - webnet
       - datanet
       - ldapnet
 
@@ -72,6 +71,5 @@ volumes:
 
 # Create network segments for the containers to use
 networks:
-    webnet:
     datanet:
     ldapnet:
