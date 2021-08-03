@@ -9,6 +9,8 @@ services:
         context: ./database
         dockerfile: Dockerfile
     command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - datanet   
 
   database_admin:
     depends_on:
@@ -19,21 +21,27 @@ services:
         dockerfile: Dockerfile
     ports:
     - 127.0.0.1:81:80
+    networks:
+      - datanet   
 
   www:
     depends_on:
-    - database
-    - ldap
+      - database
+      - ldap
     image: webpwnized/mutillidae:www
     build:
         context: ./www
         dockerfile: Dockerfile
     volumes:
     # Make the Apache log files on the image available to localhost
-    - "./www/var-log-apache2/:/var/log/apache2/"
+      - "./www/var-log-apache2/:/var/log/apache2/"
     ports:
-    - 127.0.0.1:80:80
-    - 127.0.0.1:443:443
+      - 127.0.0.1:80:80
+      - 127.0.0.1:443:443
+    networks:
+      - webnet
+      - datanet
+      - ldapnet
 
   ldap:
     image: webpwnized/mutillidae:ldap
@@ -43,17 +51,26 @@ services:
     volumes:
       - ldap_data:/var/lib/ldap
       - ldap_config:/etc/ldap/slapd.d
+    networks:
+      - ldapnet
 
   ldap_admin:
     depends_on:
-    - ldap
+      - ldap
     image: webpwnized/mutillidae:ldap_admin
     build:
         context: ./ldap_admin          
         dockerfile: Dockerfile
     ports:
-    - 127.0.0.1:82:80
+      - 127.0.0.1:82:80
+    networks:
+      - ldapnet
    
 volumes:
   ldap_data:
   ldap_config:
+
+networks:
+    webnet:
+    datanet:
+    ldapnet:
