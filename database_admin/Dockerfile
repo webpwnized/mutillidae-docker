@@ -12,5 +12,8 @@ ENV MYSQL_ROOT_PASSWORD="mutillidae"
 ENV PMA_USER="root"
 ENV PMA_PASSWORD="mutillidae"
 
+# Patch the container
+RUN apt update && apt upgrade
+
 # Open port 80 to the webserver
 EXPOSE 80

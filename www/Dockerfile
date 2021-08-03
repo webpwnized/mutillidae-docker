@@ -51,6 +51,9 @@ RUN apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl
 # Install nslookup to enable the command injection vulnerabilities
 RUN apt-get install -y dnsutils
 
+# Patch the container
+RUN apt upgrade
+
 # Enable Apache modules and sites
 RUN a2enmod ssl
 RUN a2dissite 000-default
