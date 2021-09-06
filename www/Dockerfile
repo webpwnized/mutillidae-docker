@@ -1,7 +1,7 @@
 #webpwnized/mutillidae:www
 
 # Start with recent version of PHP with Apache 
-FROM php:8.0.9-apache
+FROM php:8.0.10-apache
 
 # Update software packages
 RUN apt-get update
