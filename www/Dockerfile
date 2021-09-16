@@ -1,6 +1,7 @@
 #webpwnized/mutillidae:www
 
 # Start with recent version of PHP with Apache 
+# https://hub.docker.com/_/php?tab=tags&page=1&ordering=last_updated&name=apache
 FROM php:8.0.10-apache
 
 # Update software packages
@@ -22,7 +23,7 @@ RUN rm /var/www/mutillidae/.htaccess
 RUN sed -i 's/127.0.0.1/database/' /var/www/mutillidae/includes/database-config.inc
 
 # Change the hostname of the ldap server to the docker ldap hostname
-RUN sed -i 's/127.0.0.1/ldap/' /var/www/mutillidae/includes/ldap-config.inc
+RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
 
 # Copy the TLS certificate files from mutillidae into cert directories
 RUN cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.crt /etc/ssl/certs/mutillidae-selfsigned.crt

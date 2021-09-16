@@ -26,7 +26,7 @@ services:
   www:
     depends_on:
       - database
-      - ldap
+      - directory
     image: webpwnized/mutillidae:www
     build:
         context: ./www
@@ -41,7 +41,7 @@ services:
       - datanet
       - ldapnet
 
-  ldap:
+  directory:
     image: webpwnized/mutillidae:ldap
     build:
         context: ./ldap
@@ -52,9 +52,9 @@ services:
     networks:
       - ldapnet
 
-  ldap_admin:
+  directory_admin:
     depends_on:
-      - ldap
+      - directory
     image: webpwnized/mutillidae:ldap_admin
     build:
         context: ./ldap_admin          
@@ -63,7 +63,7 @@ services:
       - 127.0.0.1:82:80
     networks:
       - ldapnet
-   
+
 volumes:
   ldap_data:
   ldap_config:
