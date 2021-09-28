@@ -31,9 +31,6 @@ services:
     build:
         context: ./www
         dockerfile: Dockerfile
-    volumes:
-    # Make the Apache log files on the image available to localhost
-      - "./www/var-log-apache2/:/var/log/apache2/"
     ports:
       - 127.0.0.1:80:80
       - 127.0.0.1:443:443
