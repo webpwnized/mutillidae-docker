@@ -2,7 +2,7 @@
 
 # Not an official repo
 # Documentation: https://hub.docker.com/r/osixia/openldap
-FROM osixia/openldap
+FROM osixia/openldap:latest
 
 # Set up the LDAP configuration
 ENV LDAP_ORGANISATION="Mutillidae"

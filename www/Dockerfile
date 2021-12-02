@@ -2,7 +2,7 @@
 
 # Start with recent version of PHP with Apache 
 # https://hub.docker.com/_/php?tab=tags&page=1&ordering=last_updated&name=apache
-FROM php:8.0.12-apache
+FROM php:8.1.0-apache
 
 # Update software packages
 RUN apt-get update
