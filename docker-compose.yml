@@ -14,13 +14,13 @@ services:
 
   database_admin:
     depends_on:
-    - database
+      - database
     image: webpwnized/mutillidae:database_admin
     build:
         context: ./database_admin
         dockerfile: Dockerfile
     ports:
-    - 127.0.0.1:81:80
+      - 127.0.0.1:81:80
     networks:
       - datanet   
 
