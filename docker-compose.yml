@@ -5,6 +5,7 @@ version: '3.7'
 services:
 
   database:
+    container_name: database
     image: webpwnized/mutillidae:database
     build: 
         context: ./database
@@ -13,6 +14,7 @@ services:
       - datanet   
 
   database_admin:
+    container_name: database_admin
     depends_on:
       - database
     image: webpwnized/mutillidae:database_admin
@@ -25,6 +27,7 @@ services:
       - datanet   
 
   www:
+    container_name: www
     depends_on:
       - database
       - directory
@@ -40,6 +43,7 @@ services:
       - ldapnet
 
   directory:
+    container_name: directory
     image: webpwnized/mutillidae:ldap
     build:
         context: ./ldap
@@ -51,6 +55,7 @@ services:
       - ldapnet
 
   directory_admin:
+    container_name: directory_admin
     depends_on:
       - directory
     image: webpwnized/mutillidae:ldap_admin
