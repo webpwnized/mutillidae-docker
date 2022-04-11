@@ -4,6 +4,13 @@
 # https://hub.docker.com/_/php?tab=tags&page=1&ordering=last_updated&name=apache
 FROM php:8.1.3-apache
 
+# Arguments with default values, but can be overidden
+ARG DATABASE_HOST="database"
+ARG DATABASE_USERNAME="root"
+ARG DATABASE_PASSWORD="mutillidae"
+ARG DATABASE_NAME="mutillidae"
+ARG DATABASE_PORT="3306"
+
 # Update software packages
 RUN apt-get update
 
@@ -19,8 +26,12 @@ RUN apt-get remove -y git
 # Remove the .htaccess file since the containers will use container network security rather than htaccess access control
 RUN rm /var/www/mutillidae/.htaccess
 
-# Change the hostname of the database server to the docker database hostname
-RUN sed -i 's/127.0.0.1/database/' /var/www/mutillidae/includes/database-config.inc
+# Change the database configuration variables in the mutillidae project, allowing the user to override using build arguments
+RUN sed -i "s/define('DB_HOST', '127.0.0.1');/define('DB_HOST', '$DATABASE_HOST');/" /var/www/mutillidae/includes/database-config.inc
+RUN sed -i "s/define('DB_USERNAME', 'root');/define('DB_USERNAME', '$DATABASE_USERNAME');/" /var/www/mutillidae/includes/database-config.inc
+RUN sed -i "s/define('DB_PASSWORD', 'mutillidae');/define('DB_PASSWORD', '$DATABASE_PASSWORD');/" /var/www/mutillidae/includes/database-config.inc
+RUN sed -i "s/define('DB_NAME', 'mutillidae');/define('DB_NAME', '$DATABASE_NAME');/" /var/www/mutillidae/includes/database-config.inc
+RUN sed -i "s/define('DB_PORT', 3306);/define('DB_PORT', $DATABASE_PORT);/" /var/www/mutillidae/includes/database-config.inc
 
 # Change the hostname of the ldap server to the docker ldap hostname
 RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
