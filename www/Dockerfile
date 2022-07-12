@@ -63,6 +63,9 @@ RUN apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl
 # Add missing user for Lab #17
 RUN useradd -M phinius -p 123456
 
+# Missing package for Lab #12
+RUN apt-get install -y ntp
+
 # Install nslookup to enable the command injection vulnerabilities
 RUN apt-get install -y dnsutils
 
