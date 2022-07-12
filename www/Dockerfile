@@ -2,7 +2,7 @@
 
 # Start with recent version of PHP with Apache 
 # https://hub.docker.com/_/php?tab=tags&page=1&ordering=last_updated&name=apache
-FROM php:8.1.3-apache
+FROM php:8.1.8-apache
 
 # Arguments with default values, but can be overidden
 ARG DATABASE_HOST="database"
@@ -60,14 +60,11 @@ RUN apt-get install -y libxml2-dev && docker-php-ext-install xml
 RUN apt-get install -y libonig-dev && docker-php-ext-install mbstring
 RUN apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl 
 
-# Add missing user for Lab #17
-RUN useradd -M phinius -p 123456
-
-# Missing package for Lab #12
-RUN apt-get install -y ntp
-
 # Install nslookup to enable the command injection vulnerabilities
 RUN apt-get install -y dnsutils
+
+# Package for Lab #12
+RUN apt-get install -y ntp
 
 # Patch the container
 RUN apt -y upgrade
@@ -76,6 +73,9 @@ RUN apt -y upgrade
 RUN a2enmod ssl
 RUN a2dissite 000-default
 RUN a2ensite mutillidae
+
+# User for Lab #17
+RUN useradd -M phinius -p 123456
 
 # Open ports 80,443 in the container firewall
 EXPOSE 80
