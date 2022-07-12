@@ -60,6 +60,9 @@ RUN apt-get install -y libxml2-dev && docker-php-ext-install xml
 RUN apt-get install -y libonig-dev && docker-php-ext-install mbstring
 RUN apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl 
 
+# Missing package for Lab #12
+RUN apt-get install -y ntp
+
 # Install nslookup to enable the command injection vulnerabilities
 RUN apt-get install -y dnsutils
 
