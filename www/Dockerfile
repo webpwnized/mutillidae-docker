@@ -60,6 +60,9 @@ RUN apt-get install -y libxml2-dev && docker-php-ext-install xml
 RUN apt-get install -y libonig-dev && docker-php-ext-install mbstring
 RUN apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl 
 
+# Add missing user for Lab #17
+RUN useradd -M phinius -p 123456
+
 # Missing package for Lab #12
 RUN apt-get install -y ntp
 
