@@ -7,5 +7,5 @@ FROM mysql:debian
 ENV MYSQL_ROOT_PASSWORD="mutillidae"
 
 # Patch the container
-RUN apt update
-RUN apt -y upgrade
+RUN apt update && apt -y upgrade
+
