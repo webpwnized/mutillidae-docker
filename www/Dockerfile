@@ -2,7 +2,7 @@
 
 # Start with recent version of PHP with Apache 
 # https://hub.docker.com/_/php?tab=tags&page=1&ordering=last_updated&name=apache
-FROM php:8.1.8-apache
+FROM php:8.1.9-apache
 
 # Arguments with default values, but can be overidden
 ARG DATABASE_HOST="database"
@@ -14,6 +14,19 @@ ARG DATABASE_PORT="3306"
 # Update software packages
 RUN apt-get update
 
+# Install PHP requirements used by Mutillidae II
+RUN apt-get install -y libldap2-dev && docker-php-ext-install ldap
+RUN docker-php-ext-install mysqli
+RUN apt-get install -y libxml2-dev && docker-php-ext-install xml
+RUN apt-get install -y libonig-dev && docker-php-ext-install mbstring
+RUN apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl 
+
+# Install nslookup to enable the command injection vulnerabilities
+RUN apt-get install -y dnsutils
+
+# Package for Lab #12
+RUN apt-get install -y ntp
+
 # Install git
 RUN apt-get install -y git
 
@@ -22,6 +35,9 @@ RUN git clone https://github.com/webpwnized/mutillidae.git /var/www/mutillidae
 
 # uninstall git
 RUN apt-get remove -y git
+
+# Patch the container
+RUN apt -y upgrade
 
 # Remove the .htaccess file since the containers will use container network security rather than htaccess access control
 RUN rm /var/www/mutillidae/.htaccess
@@ -52,22 +68,6 @@ RUN cp /var/www/mutillidae/configuration/apache-configuration/error-pages/oops.j
 RUN cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf
 
 RUN cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf
-
-# Install PHP requirements used by Mutillidae II
-RUN apt-get install -y libldap2-dev && docker-php-ext-install ldap
-RUN docker-php-ext-install mysqli
-RUN apt-get install -y libxml2-dev && docker-php-ext-install xml
-RUN apt-get install -y libonig-dev && docker-php-ext-install mbstring
-RUN apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl 
-
-# Install nslookup to enable the command injection vulnerabilities
-RUN apt-get install -y dnsutils
-
-# Package for Lab #12
-RUN apt-get install -y ntp
-
-# Patch the container
-RUN apt -y upgrade
 
 # Enable Apache modules and sites
 RUN a2enmod ssl
