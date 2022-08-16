@@ -11,8 +11,13 @@ ARG DATABASE_PASSWORD="mutillidae"
 ARG DATABASE_NAME="mutillidae"
 ARG DATABASE_PORT="3306"
 
+
+# ######################### #
+# Install software packages #
+# ######################### #
+
 # Update software packages
-# Install PHP requirements used by Mutillidae II
+# Install PHP requirements used by Mutillidae II: php-xml, php-mbstring, php-curl, php-mysql, php-ldap
 # Install nslookup to enable the command injection vulnerabilities
 # Install ntp package for Lab #12
 # Install git
@@ -33,6 +38,23 @@ RUN apt-get remove -y git
 # Patch the container
 RUN apt -y upgrade
 
+
+# #################################### #
+# Configure the PHP application server #
+# #################################### #
+# Use development version of the PHP ini file
+# Make PHP vulnerable to RFI again
+# Ensure the PHP server banner shows in the HTTP response
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
+    sed -i 's/allow_url_include = Off/allow_url_include = On/g' /usr/local/etc/php/php.ini && \
+    sed -i 's/allow_url_fopen = Off/allow_url_fopen = On/g' /usr/local/etc/php/php.ini && \
+    sed -i 's/expose_php = Off/expose_php = On/g' /usr/local/etc/php/php.ini
+
+
+# ######################### #
+# Configure the application #
+# ######################### #
+
 # Remove the .htaccess file since the containers will use container network security rather than htaccess access control
 RUN rm /var/www/mutillidae/.htaccess
 
@@ -42,6 +64,11 @@ RUN sed -i "s/define('DB_HOST', '127.0.0.1');/define('DB_HOST', '$DATABASE_HOST'
     sed -i "s/define('DB_PASSWORD', 'mutillidae');/define('DB_PASSWORD', '$DATABASE_PASSWORD');/" /var/www/mutillidae/includes/database-config.inc && \
     sed -i "s/define('DB_NAME', 'mutillidae');/define('DB_NAME', '$DATABASE_NAME');/" /var/www/mutillidae/includes/database-config.inc && \
     sed -i "s/define('DB_PORT', 3306);/define('DB_PORT', $DATABASE_PORT);/" /var/www/mutillidae/includes/database-config.inc
+
+
+# ######################## #
+# Configure the web server #
+# ######################## #
 
 # Change the hostname of the ldap server to the docker ldap hostname
 RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
@@ -66,7 +93,7 @@ RUN a2enmod ssl && \
     a2dissite 000-default && \
     a2ensite mutillidae
 
-# User for Lab #17
+# Add the user for Lab #17
 RUN useradd -M phinius -p 123456
 
 # Open ports 80,443 in the container firewall
