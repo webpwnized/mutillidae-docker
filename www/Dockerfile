@@ -33,10 +33,9 @@ RUN apt-get update && \
 RUN git clone https://github.com/webpwnized/mutillidae.git /var/www/mutillidae
 
 # uninstall git
-RUN apt-get remove -y git
-
 # Patch the container
-RUN apt -y upgrade
+RUN apt-get remove -y git && \
+    apt -y upgrade
 
 
 # #################################### #
@@ -56,15 +55,13 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
 # ######################### #
 
 # Remove the .htaccess file since the containers will use container network security rather than htaccess access control
-RUN rm /var/www/mutillidae/.htaccess
-
 # Change the database configuration variables in the mutillidae project, allowing the user to override using build arguments
-RUN sed -i "s/define('DB_HOST', '127.0.0.1');/define('DB_HOST', '$DATABASE_HOST');/" /var/www/mutillidae/includes/database-config.inc && \
+RUN rm /var/www/mutillidae/.htaccess && \
+    sed -i "s/define('DB_HOST', '127.0.0.1');/define('DB_HOST', '$DATABASE_HOST');/" /var/www/mutillidae/includes/database-config.inc && \
     sed -i "s/define('DB_USERNAME', 'root');/define('DB_USERNAME', '$DATABASE_USERNAME');/" /var/www/mutillidae/includes/database-config.inc && \
     sed -i "s/define('DB_PASSWORD', 'mutillidae');/define('DB_PASSWORD', '$DATABASE_PASSWORD');/" /var/www/mutillidae/includes/database-config.inc && \
     sed -i "s/define('DB_NAME', 'mutillidae');/define('DB_NAME', '$DATABASE_NAME');/" /var/www/mutillidae/includes/database-config.inc && \
     sed -i "s/define('DB_PORT', 3306);/define('DB_PORT', $DATABASE_PORT);/" /var/www/mutillidae/includes/database-config.inc
-
 
 # ######################## #
 # Configure the web server #
@@ -90,10 +87,9 @@ RUN mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/default.conf /etc/apache2/sites-available/default.conf && \
     echo "<html><head><title>It works</title></head><body><h1>It works</h1></body></html>" > /var/www/html/index.html
 
-# Enable Apache modules and sites
+# Enable Apache TLS modules, the default site, and the mutillidae site
 RUN a2enmod ssl && \
-    a2dissite 000-default && \
-    a2ensite default && \
+    a2ensite 000-default && \
     a2ensite mutillidae
 
 # Add the user for Lab #17
