@@ -23,16 +23,23 @@ REPOSITORY="mutillidae"
 NO_CACHE=""
 CURRENT_DIR="$(pwd)"
 
+# Set shell option - case insenitive
+shopt -s nocasematch
+
 if [ $FORCE_REBUILD == "TRUE" ]
 then
 	NO_CACHE="--no-cache"
 fi
 
+# Unset shell option - case insenitive
+shopt -u nocasematch
+
 echo "Version: $VERSON"
 echo "Annotation: $ANNOTATION"
 echo "Force Rebuild: $FORCE_REBUILD"
+echo "No cache option: $NO_CACHE"
 echo ""
-	
+
 echo "Updating version file"
 echo $VERSION > $CURRENT_DIR/version
 
