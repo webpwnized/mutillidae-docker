@@ -74,17 +74,19 @@ RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
 RUN cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.crt /etc/ssl/certs/mutillidae-selfsigned.crt  && \
     cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.key /etc/ssl/private/mutillidae-selfsigned.key
 
+# Copy the host entries into the host file
 # Copy the Apache configuration from Mutillidae into Apache conf
 # Create the default Apache page
-RUN mkdir /etc/apache2/conf/ && \
+RUN cat /var/www/mutillidae/configuration/hosts-file/hosts >> /etc/hosts && \
+    mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf/error-pages.conf /etc/apache2/conf/error-pages.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf/headers.conf /etc/apache2/conf/headers.conf && \
-    mkdir /var/www/mutillidae/error-pages/ && \
-    cp /var/www/mutillidae/configuration/apache-configuration/error-pages/404.html /var/www/mutillidae/error-pages/404.html && \
-    cp /var/www/mutillidae/configuration/apache-configuration/error-pages/oops.jpg /var/www/mutillidae/error-pages/oops.jpg && \
+    mkdir /etc/apache2/error-pages/ && \
+    cp /var/www/mutillidae/configuration/apache-configuration/error-pages/404.html /etc/apache2/error-pages/404.html && \
+    cp /var/www/mutillidae/configuration/apache-configuration/error-pages/oops.jpg /etc/apache2/error-pages/oops.jpg && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf && \
+    cp /var/www/mutillidae/configuration/apache-configuration/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
-    cp /var/www/mutillidae/configuration/apache-configuration/sites-available/default.conf /etc/apache2/sites-available/default.conf && \
     echo "<html><head><title>It works</title></head><body><h1>It works</h1></body></html>" > /var/www/html/index.html
 
 # Enable Apache TLS modules, the default site, and the mutillidae site
