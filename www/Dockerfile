@@ -87,6 +87,7 @@ RUN mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/error-pages/oops.jpg /var/www/mutillidae/error-pages/oops.jpg && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
+    cp /var/www/mutillidae/configuration/apache-configuration/sites-available/default.conf /etc/apache2/sites-available/default.conf && \
     echo "<html><head><title>It works</title></head><body><h1>It works</h1></body></html>" > /var/www/html/index.html
 
 # Enable Apache modules and sites
