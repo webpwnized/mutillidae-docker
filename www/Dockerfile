@@ -75,9 +75,10 @@ RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
 
 # Copy the TLS certificate files from mutillidae into cert directories
 RUN cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.crt /etc/ssl/certs/mutillidae-selfsigned.crt  && \
-    cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.key /etc/ssl/private/mutillidae-selfsigned.key
+    cp /var/www/mutillidae/<configuration/https-certificate/mutillidae-selfsigned.key /etc/ssl/private/mutillidae-selfsigned.key
 
 # Copy the Apache configuration from Mutillidae into Apache conf
+# Create the default Apache page
 RUN mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf/error-pages.conf /etc/apache2/conf/error-pages.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf/headers.conf /etc/apache2/conf/headers.conf && \
@@ -86,7 +87,7 @@ RUN mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/error-pages/oops.jpg /var/www/mutillidae/error-pages/oops.jpg && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
-    echo "<h1>It works</h1>" > /var/www/html/index.html
+    echo "<html><head><title>It works</title></head><body><h1>It works</h1></body></html>" > /var/www/html/index.html
 
 # Enable Apache modules and sites
 RUN a2enmod ssl && \
