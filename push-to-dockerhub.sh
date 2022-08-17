@@ -22,17 +22,13 @@ ACCOUNT="webpwnized"
 REPOSITORY="mutillidae"
 NO_CACHE=""
 CURRENT_DIR="$(pwd)"
+FORCE_REBUILD=$(echo $FORCE_REBUILD | tr [:upper:] [:lower:]);
 
-# Set shell option - case insenitive
-shopt -s nocasematch
 
 if [ $FORCE_REBUILD == "TRUE" ]
 then
 	NO_CACHE="--no-cache"
 fi
-
-# Unset shell option - case insenitive
-shopt -u nocasematch
 
 echo "Version: $VERSON"
 echo "Annotation: $ANNOTATION"
