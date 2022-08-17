@@ -76,9 +76,9 @@ RUN cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned
 
 # Copy the host entries into the host file
 # Copy the Apache configuration from Mutillidae into Apache conf
+# Change references to 
 # Create the default Apache page
-RUN cat /var/www/mutillidae/configuration/hosts-file/hosts >> /etc/hosts && \
-    mkdir /etc/apache2/conf/ && \
+RUN mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf/error-pages.conf /etc/apache2/conf/error-pages.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf/headers.conf /etc/apache2/conf/headers.conf && \
     mkdir /etc/apache2/error-pages/ && \
@@ -87,6 +87,8 @@ RUN cat /var/www/mutillidae/configuration/hosts-file/hosts >> /etc/hosts && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
+    sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/000-default.conf && \
+    sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf && \
     echo "<html><head><title>It works</title></head><body><h1>It works</h1></body></html>" > /var/www/html/index.html
 
 # Enable Apache TLS modules, the default site, and the mutillidae site
