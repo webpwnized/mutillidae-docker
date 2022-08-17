@@ -22,8 +22,7 @@ ACCOUNT="webpwnized"
 REPOSITORY="mutillidae"
 NO_CACHE=""
 CURRENT_DIR="$(pwd)"
-FORCE_REBUILD=$(echo $FORCE_REBUILD | tr [:upper:] [:lower:]);
-
+FORCE_REBUILD=$(echo $FORCE_REBUILD | tr [:lower:] [:upper:]);
 
 if [ $FORCE_REBUILD == "TRUE" ]
 then
