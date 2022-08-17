@@ -75,7 +75,7 @@ RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
 
 # Copy the TLS certificate files from mutillidae into cert directories
 RUN cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.crt /etc/ssl/certs/mutillidae-selfsigned.crt  && \
-    cp /var/www/mutillidae/<configuration/https-certificate/mutillidae-selfsigned.key /etc/ssl/private/mutillidae-selfsigned.key
+    cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.key /etc/ssl/private/mutillidae-selfsigned.key
 
 # Copy the Apache configuration from Mutillidae into Apache conf
 # Create the default Apache page
