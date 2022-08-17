@@ -80,13 +80,13 @@ RUN cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned
 # Copy the Apache configuration from Mutillidae into Apache conf
 RUN mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf/error-pages.conf /etc/apache2/conf/error-pages.conf && \
-    cp /var/www/mutillidae/configuration/apache-configuration/conf/headers.conf /etc/apache2/conf/headers.conf
-
-RUN mkdir /var/www/mutillidae/error-pages/ && \
+    cp /var/www/mutillidae/configuration/apache-configuration/conf/headers.conf /etc/apache2/conf/headers.conf && \
+    mkdir /var/www/mutillidae/error-pages/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/error-pages/404.html /var/www/mutillidae/error-pages/404.html && \
     cp /var/www/mutillidae/configuration/apache-configuration/error-pages/oops.jpg /var/www/mutillidae/error-pages/oops.jpg && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf && \
-    cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf
+    cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
+    echo "<h1>It works</h1>" > /var/www/html/index.html
 
 # Enable Apache modules and sites
 RUN a2enmod ssl && \
