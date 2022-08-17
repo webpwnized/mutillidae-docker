@@ -92,6 +92,7 @@ RUN mkdir /etc/apache2/conf/ && \
 # Enable Apache modules and sites
 RUN a2enmod ssl && \
     a2dissite 000-default && \
+    a2ensite default && \
     a2ensite mutillidae
 
 # Add the user for Lab #17
