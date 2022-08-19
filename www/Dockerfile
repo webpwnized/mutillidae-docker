@@ -20,6 +20,7 @@ ARG DATABASE_PORT="3306"
 # Install PHP requirements used by Mutillidae II: php-xml, php-mbstring, php-curl, php-mysql, php-ldap
 # Install nslookup to enable the command injection vulnerabilities
 # Install ntp package for Lab #12
+# Install ping package for Lab #13
 # Install git
 RUN apt-get update && \
     apt-get install -y libldap2-dev && docker-php-ext-install ldap && \
@@ -27,7 +28,7 @@ RUN apt-get update && \
     apt-get install -y libonig-dev && docker-php-ext-install mbstring && \
     apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl && \ 
     docker-php-ext-install mysqli && \
-    apt-get install -y dnsutils ntp git
+    apt-get install -y dnsutils ntp iputils-ping git
     
 # Copy the mutillidae project to Apache web files directory
 RUN git clone https://github.com/webpwnized/mutillidae.git /var/www/mutillidae
