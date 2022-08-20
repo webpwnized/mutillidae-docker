@@ -11,5 +11,3 @@ ENV LDAP_DOMAIN="mutillidae.local"
 ENV LDAP_ADMIN_PASSWORD="mutillidae"
 ENV LDAP_BASE_DN="dc=mutillidae,dc=local"
 ENV LDAP_TLS="false"
-
-VOLUME ./mutillidae.ldif:/container/service/slapd/assets/config/bootstrap/ldif/50-bootstrap.ldif

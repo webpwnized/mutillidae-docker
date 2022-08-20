@@ -51,6 +51,8 @@ services:
     volumes:
       - ldap_data:/var/lib/ldap
       - ldap_config:/etc/ldap/slapd.d
+      - ./ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom:rw
+    command: --copy-service
     networks:
       - ldapnet
 
@@ -70,7 +72,7 @@ services:
 volumes:
   ldap_data:
   ldap_config:
-
+  
 # Create network segments for the containers to use
 networks:
     datanet:
