@@ -93,7 +93,7 @@ RUN mkdir /etc/apache2/conf/ && \
 #    echo "<html><head><title>It works</title></head><body><h1>It works</h1></body></html>" > /var/www/html/index.html
 
 # Enable Apache TLS modules, the default site, and the mutillidae site
-RUN # a2enmod ssl && \
+RUN a2enmod ssl && \
     # a2ensite 000-default && \
     a2ensite mutillidae
 
