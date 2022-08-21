@@ -77,7 +77,7 @@ RUN cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned
 
 # Copy the host entries into the host file
 # Copy the Apache configuration from Mutillidae into Apache conf
-# Change references to 
+# Change the localhost references to listen on external network interfaces
 # Create the default Apache page
 RUN mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf/error-pages.conf /etc/apache2/conf/error-pages.conf && \
@@ -86,15 +86,15 @@ RUN mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/error-pages/404.html /etc/apache2/error-pages/404.html && \
     cp /var/www/mutillidae/configuration/apache-configuration/error-pages/oops.jpg /etc/apache2/error-pages/oops.jpg && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf && \
-    cp /var/www/mutillidae/configuration/apache-configuration/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf && \
+#    cp /var/www/mutillidae/configuration/apache-configuration/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
-    sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/000-default.conf && \
-    sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf && \
-    echo "<html><head><title>It works</title></head><body><h1>It works</h1></body></html>" > /var/www/html/index.html
+#    sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/000-default.conf && \
+    sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf # && \
+#    echo "<html><head><title>It works</title></head><body><h1>It works</h1></body></html>" > /var/www/html/index.html
 
 # Enable Apache TLS modules, the default site, and the mutillidae site
-RUN a2enmod ssl && \
-    a2ensite 000-default && \
+RUN # a2enmod ssl && \
+    # a2ensite 000-default && \
     a2ensite mutillidae
 
 # Add the user for Lab #17
