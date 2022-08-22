@@ -76,7 +76,9 @@ RUN rm /var/www/mutillidae/.htaccess && \
 # Copy the Apache configuration from Mutillidae into Apache conf
 # Change the localhost references to listen on external network interfaces
 # Create the default Apache page
-# Enable Apache TLS modules, the default site, and the mutillidae site
+# Enable Apache TLS modules
+# Disable the default site because it intercepts calls to Mutillidae made by IP address
+# Enable the mutillidae site
 RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc && \
     cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.crt /etc/ssl/certs/mutillidae-selfsigned.crt  && \
     cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.key /etc/ssl/private/mutillidae-selfsigned.key && \
@@ -90,6 +92,7 @@ RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
     sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf && \
     a2enmod ssl && \
+    a2dissite 000-default && \
     a2ensite mutillidae
     
 
