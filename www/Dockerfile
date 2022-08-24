@@ -75,7 +75,8 @@ RUN rm /var/www/mutillidae/.htaccess && \
 # Copy the host entries into the host file
 # Copy the Apache configuration from Mutillidae into Apache conf
 # Change the localhost references to listen on external network interfaces
-# Create the default Apache page
+# Unlink access log and error log so the log files can be written in the container
+# Make sure access log and error log exist
 # Enable Apache TLS modules
 # Disable the default site because it intercepts calls to Mutillidae made by IP address
 # Enable the mutillidae site
@@ -91,10 +92,14 @@ RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
     cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
     sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf && \
+    unlink /var/log/apache2/access.log && \
+    unlink /var/log/apache2/error.log && \
+    touch /var/log/apache2/access.log && \
+    touch /var/log/apache2/error.log && \
     a2enmod ssl && \
     a2dissite 000-default && \
     a2ensite mutillidae
-    
+
 
 # Open ports 80,443 in the container firewall
 EXPOSE 80
