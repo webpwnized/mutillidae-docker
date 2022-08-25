@@ -20,7 +20,7 @@ The following video tutorials explain how to bring up Mutillidae on a set of 5 c
 
 ## Important Information
 
-The web site assumes the user will access the site using domain mutillidae.localhost. The domain can be configured in the users local hosts file.
+If using the Apache configuration fieThe web site assumes the user will access the site using domain mutillidae.localhost. The domain can be configured in the users local hosts file.
 
 ## Instructions
 
@@ -37,3 +37,12 @@ The Dockerfile files in each directory contain the instructions to build each co
 To build the containers, if neccesary, and bring the containers up, run the following command.
 
 	docker-compose up -d
+	
+Once the containers are running, the following services are available on localhost.
+
+- Port 80, 8080: Mutillidae HTTP web interface
+- Port 81: MySQL Admin HTTP web interface
+- Port 82: LDAP Admin web interface
+- Port 443: HTTPS web interface
+- Port 389: LDAP interface
+
