@@ -20,7 +20,7 @@ The following video tutorials explain how to bring up Mutillidae on a set of 5 c
 
 ## Important Information
 
-If using the Apache configuration fieThe web site assumes the user will access the site using domain mutillidae.localhost. The domain can be configured in the users local hosts file.
+The web site assumes the user will access the site using domain mutillidae.localhost. The domain can be configured in the users local hosts file.
 
 ## Instructions
 
