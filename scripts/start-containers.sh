@@ -16,7 +16,7 @@ curl http://mutillidae.localhost/set-up-database.php;
 echo "";
 echo "Uploading Mutillidae LDIF file to LDAP directory server";
 CURRENT_DIRECTORY=$(pwd);
-ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap:// -f $CURRENT_DIRECTORY/ldif/mutillidae.ldif;
+ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap:// -f $CURRENT_DIRECTORY/ldap/ldif/mutillidae.ldif;
 
 # Wait for the user to press Enter key
 read -p "Press Enter to continue or <CTRL>-C to stop" </dev/tty
