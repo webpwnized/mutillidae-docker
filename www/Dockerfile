@@ -92,6 +92,7 @@ RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
     cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf && \
     cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
     sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf && \
+    sed -i 's/127.0.0.2/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf && \
     unlink /var/log/apache2/access.log && \
     unlink /var/log/apache2/error.log && \
     touch /var/log/apache2/access.log && \
