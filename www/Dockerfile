@@ -2,7 +2,7 @@
 
 # Start with recent version of PHP with Apache 
 # https://hub.docker.com/_/php?tab=tags&page=1&ordering=last_updated&name=apache
-FROM php:8.1.9-apache
+FROM php:8.2.0-apache
 
 # Arguments with default values, but can be overidden
 ARG DATABASE_HOST="database"
