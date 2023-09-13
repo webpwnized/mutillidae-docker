@@ -18,6 +18,8 @@ The following video tutorials explain how to bring up Mutillidae on a set of 5 c
 
 	docker-compose up -d
 
+Generate the database with the first link in the warning webpage.
+
 ## Important Information
 
 The web site assumes the user will access the site using domain mutillidae.localhost. The domain can be configured in the users local hosts file.
@@ -45,4 +47,7 @@ Once the containers are running, the following services are available on localho
 - Port 82: LDAP Admin web interface
 - Port 443: HTTPS web interface
 - Port 389: LDAP interface
+
+The first time the webpage is accessed, a warning webpage will be displayed referencing the database cannot be found. This is the expected behaviour. Just use the link to "rebuild" the database and it will start working normally.
+
 
