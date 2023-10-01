@@ -21,7 +21,6 @@ ACCOUNT="webpwnized";
 REPOSITORY="mutillidae";
 NO_CACHE="";
 CURRENT_DIR="$(pwd)";
-PARENT_DIR="$CURRENT_DIR/..";
 FORCE_REBUILD=$(echo $FORCE_REBUILD | tr [:lower:] [:upper:]);
 
 if [ $FORCE_REBUILD == "TRUE" ]; then
@@ -35,7 +34,7 @@ echo "No cache option: $NO_CACHE";
 echo "";
 
 echo "Updating version file";
-echo $VERSION > $PARENT_DIR/version;
+echo $VERSION > $CURRENT_DIR/version;
 
 $CURRENT_DIR/git.sh "$VERSION" "$ANNOTATION";
 
