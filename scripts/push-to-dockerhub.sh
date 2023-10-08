@@ -21,6 +21,7 @@ ACCOUNT="webpwnized";
 REPOSITORY="mutillidae";
 NO_CACHE="";
 CURRENT_DIR="$(pwd)";
+PARENT_DIR="..";
 FORCE_REBUILD=$(echo $FORCE_REBUILD | tr [:lower:] [:upper:]);
 
 if [ $FORCE_REBUILD == "TRUE" ]; then
@@ -33,8 +34,8 @@ echo "Force Rebuild: $FORCE_REBUILD";
 echo "No cache option: $NO_CACHE";
 echo "";
 
-echo "Updating version file";
-echo $VERSION > $CURRENT_DIR/version;
+echo "Updating the project version file";
+echo $VERSION > $PARENT_DIR/version;
 
 $CURRENT_DIR/git.sh "$VERSION" "$ANNOTATION";
 
@@ -68,5 +69,6 @@ for i in "${tags[@]}"; do
     echo "Pushing $REGISTRY/$ACCOUNT/$REPOSITORY:$i-$VERSION to the DockerHub repository";
     echo "Running command: docker push $REGISTRY/$ACCOUNT/$REPOSITORY:$i-$VERSION";
     docker push $REGISTRY/$ACCOUNT/$REPOSITORY:$i-$VERSION;
-done
+done;
+
 
