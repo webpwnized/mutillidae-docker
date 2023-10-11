@@ -13,7 +13,7 @@ jobs:
       - name: Get version from version file
         run: |
           VERSION=$(cat VERSION)
-    	  echo "VERSION=$VER" >> $GITHUB_ENV
+          echo "VERSION=$VER" >> $GITHUB_ENV
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
