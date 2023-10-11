@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get version from version file
-	run: |
-    	  VERSION=$(cat VERSION)
+        run: |
+          VERSION=$(cat VERSION)
     	  echo "VERSION=$VER" >> $GITHUB_ENV
       -
         name: Set up QEMU
