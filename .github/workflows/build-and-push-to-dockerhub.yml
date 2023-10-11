@@ -9,6 +9,10 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - 
+        name: Check out the codebase
+        uses: actions/checkout@v2
+      
       - name: Get version from version file
         run: |
           VERSION=$(cat version)
