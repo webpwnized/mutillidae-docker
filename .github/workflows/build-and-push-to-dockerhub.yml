@@ -11,7 +11,7 @@ jobs:
     steps:
       - 
         name: Check out the codebase
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       
       - name: Get version from version file
         run: |
@@ -33,12 +33,16 @@ jobs:
         name: Build and push database container
         uses: docker/build-push-action@v5
         with:
+          context: .
+          file: ./database/Dockerfile
           push: true
           tags: webpwnized/mutillidae:database
       -
         name: Build and push database container
         uses: docker/build-push-action@v5
         with:
+          context: .
+          file: ./database/Dockerfile
           push: true
           tags: webpwnized/mutillidae:database-${{ env.VERSION }}
 
