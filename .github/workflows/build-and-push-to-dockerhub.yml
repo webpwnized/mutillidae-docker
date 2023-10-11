@@ -12,7 +12,7 @@ jobs:
       - name: Get version from version file
         run: |
           VERSION=$(cat version)
-          echo "VERSION=$VER" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -37,5 +37,7 @@ jobs:
         with:
           push: true
           tags: webpwnized/mutillidae:database-${{ env.VERSION }}
+
+
 
 
