@@ -10,8 +10,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Get version from version file
+      - name: Get version from version file
 	run: |
     	  VERSION=$(cat VERSION)
     	  echo "VERSION=$VER" >> $GITHUB_ENV
