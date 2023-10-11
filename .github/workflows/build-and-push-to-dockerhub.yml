@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Get version from version file
         run: |
-          VERSION=$(cat VERSION)
+          VERSION=$(cat version)
           echo "VERSION=$VER" >> $GITHUB_ENV
       -
         name: Set up QEMU
