@@ -29,6 +29,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       -
         name: Build and push database container
         uses: docker/build-push-action@v5
@@ -46,6 +47,73 @@ jobs:
           push: true
           tags: webpwnized/mutillidae:database-${{ env.VERSION }}
 
+      -
+        name: Build and push database_admin container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./database_admin/Dockerfile
+          push: true
+          tags: webpwnized/mutillidae:database_admin
+      -
+        name: Build and push database_admin container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./database_admin/Dockerfile
+          push: true
+          tags: webpwnized/mutillidae:database_admin-${{ env.VERSION }}
+
+      -
+        name: Build and push ldap container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./ldap/Dockerfile
+          push: true
+          tags: webpwnized/mutillidae:ldap
+      -
+        name: Build and push ldap container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./ldap/Dockerfile
+          push: true
+          tags: webpwnized/mutillidae:ldap-${{ env.VERSION }}
+
+      -
+        name: Build and push ldap_admin container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./ldap_admin/Dockerfile
+          push: true
+          tags: webpwnized/mutillidae:ldap_admin
+      -
+        name: Build and push ldap_admin container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./ldap_admin/Dockerfile
+          push: true
+          tags: webpwnized/mutillidae:ldap_admin-${{ env.VERSION }}
+
+      -
+        name: Build and push www container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./www/Dockerfile
+          push: true
+          tags: webpwnized/mutillidae:www
+      -
+        name: Build and push www container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./www/Dockerfile
+          push: true
+          tags: webpwnized/mutillidae:www-${{ env.VERSION }}
 
 
 
