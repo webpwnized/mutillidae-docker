@@ -6,7 +6,6 @@ on:
       - 'main'
 
 jobs:
-  name: build-and-push
   docker:
     runs-on: ubuntu-latest
     steps:
