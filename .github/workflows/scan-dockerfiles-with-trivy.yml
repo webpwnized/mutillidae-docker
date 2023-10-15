@@ -1,4 +1,4 @@
-name: run-trivy
+name: scan-dockerfiles-with-trivy
 on:
   push:
     branches:
