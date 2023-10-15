@@ -11,24 +11,51 @@ jobs:
     steps:
       - 
         name: Check out the codebase
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
-      - name: Get version from version file
+      - 
+        name: Get version from version file
         run: |
           VERSION=$(cat version)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+      
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+      
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      
       -
         name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - 
+        name: Build and Export Database Container to Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./database/Dockerfile
+          load: true
+          tags: webpwnized/mutillidae:database
+
+      - 
+        name: Run Trivy vulnerability scanner on Database Container
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'webpwnized/mutillidae:database'
+          format: 'sarif'
+          output: 'database-trivy-results.sarif'
+
+      - 
+        name: Upload Database Container Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'database-trivy-results.sarif'
 
       -
         name: Build and push database container
