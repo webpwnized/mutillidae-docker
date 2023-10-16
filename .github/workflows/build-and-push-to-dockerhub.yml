@@ -1,9 +1,16 @@
-name: build-push-dockerhub
+name: build-scan-push-to-dockerhub
 
 on:
   push:
     branches:
       - 'main'
+
+env:
+  DATABASE_CONTAINER_NAME: "database"
+  DATABASE_ADMIN_CONTAINER_NAME: "database_admin"
+  LDAP_CONTAINER_NAME: "ldap"
+  LDAP_ADMIN_CONTAINER_NAME: "ldap_admin"
+  WEB_CONTAINER_NAME: "www"
 
 jobs:
   docker:
@@ -20,11 +27,11 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
       
       -
-        name: Set up QEMU
+        name: Set up QEMU on the runner
         uses: docker/setup-qemu-action@v3
       
       -
-        name: Set up Docker Buildx
+        name: Set up Docker Buildx on the runner
         uses: docker/setup-buildx-action@v3
       
       -
@@ -35,44 +42,45 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - 
-        name: Build and Export Database Container to Docker
+        name: Build and Export ${{ env,DATABASE_CONTAINER_NAME }} Container to Docker
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./database/Dockerfile
+          file: ./${{ env,DATABASE_CONTAINER_NAME }}/Dockerfile
           load: true
-          tags: webpwnized/mutillidae:database
+          tags: webpwnized/mutillidae:${{ env,DATABASE_CONTAINER_NAME }}
 
       - 
-        name: Run Trivy vulnerability scanner on Database Container
+        name: Run Trivy vulnerability scanner on ${{ env,DATABASE_CONTAINER_NAME }} Container
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'webpwnized/mutillidae:database'
+          image-ref: 'webpwnized/mutillidae:${{ env,DATABASE_CONTAINER_NAME }}'
           format: 'sarif'
-          output: 'database-trivy-results.sarif'
+          output: '${{ env,DATABASE_CONTAINER_NAME }}-trivy-scan-results.sarif'
 
       - 
-        name: Upload Database Container Trivy scan results to GitHub Security tab
+        name: Upload ${{ env,DATABASE_CONTAINER_NAME }} Container Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: 'database-trivy-results.sarif'
+          sarif_file: '${{ env,DATABASE_CONTAINER_NAME }}-trivy-scan-results.sarif'
 
       -
-        name: Build and push database container
+        name: Build and push ${{ env,DATABASE_CONTAINER_NAME }} container
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./database/Dockerfile
+          file: ./${{ env,DATABASE_CONTAINER_NAME }}/Dockerfile
           push: true
-          tags: webpwnized/mutillidae:database
+          tags: webpwnized/mutillidae:${{ env,DATABASE_CONTAINER_NAME }}
+
       -
-        name: Build and push database container
+        name: Build and push ${{ env,DATABASE_CONTAINER_NAME }} container with version number
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./database/Dockerfile
+          file: ./${{ env,DATABASE_CONTAINER_NAME }}/Dockerfile
           push: true
-          tags: webpwnized/mutillidae:database-${{ env.VERSION }}
+          tags: webpwnized/mutillidae:${{ env,DATABASE_CONTAINER_NAME }}-${{ env.VERSION }}
 
       -
         name: Build and push database_admin container
