@@ -70,6 +70,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: '${{ env.DATABASE_CONTAINER_NAME }}-trivy-scan-results.sarif'
+          catagory: ${{ env.DATABASE_CONTAINER_NAME }}
 
       -
         name: Build and push Database container
@@ -115,6 +116,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: '${{ env.DATABASE_ADMIN_CONTAINER_NAME }}-trivy-scan-results.sarif'
+          catagory: ${{ env.DATABASE_ADMIN_CONTAINER_NAME }}
 
       -
         name: Build and push Database Admin Container
@@ -160,6 +162,7 @@ jobs:
           uses: github/codeql-action/upload-sarif@v2
           with:
             sarif_file: '${{ env.LDAP_CONTAINER_NAME }}-trivy-scan-results.sarif'
+            catagory: ${{ env.LDAP_CONTAINER_NAME }}
   
       -
           name: Build and push LDAP Container
@@ -205,6 +208,7 @@ jobs:
           uses: github/codeql-action/upload-sarif@v2
           with:
             sarif_file: '${{ env.LDAP_ADMIN_CONTAINER_NAME }}-trivy-scan-results.sarif'
+            catagory: ${{ env.LDAP_ADMIN_CONTAINER_NAME }}
   
       -
           name: Build and push LDAP Admin Container
@@ -250,6 +254,7 @@ jobs:
           uses: github/codeql-action/upload-sarif@v2
           with:
             sarif_file: '${{ env.WEB_CONTAINER_NAME}}-trivy-scan-results.sarif'
+            catagory: ${{ env.WEB_CONTAINER_NAME }}
   
       -
           name: Build and push Web Container
