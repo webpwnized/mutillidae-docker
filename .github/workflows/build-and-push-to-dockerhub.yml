@@ -16,6 +16,9 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      # --------------------------------------
+      # Prepare the runner
+      # --------------------------------------
       - 
         name: Check out the codebase
         uses: actions/checkout@v4
@@ -41,8 +44,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # ----------------------------------------------------------------------------
+      # Database Container
+      # ----------------------------------------------------------------------------
       - 
-        name: Build and Export ${{ env.DATABASE_CONTAINER_NAME }} Container to Docker
+        name: Build and Export Database Container to Docker
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -51,7 +57,7 @@ jobs:
           tags: webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}
 
       - 
-        name: Run Trivy vulnerability scanner on ${{ env.DATABASE_CONTAINER_NAME }} Container
+        name: Run Trivy vulnerability scanner on Database Container
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}'
@@ -59,13 +65,13 @@ jobs:
           output: '${{ env.DATABASE_CONTAINER_NAME }}-trivy-scan-results.sarif'
 
       - 
-        name: Upload ${{ env.DATABASE_CONTAINER_NAME }} Container Trivy scan results to GitHub Security tab
+        name: Upload Database Container Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: '${{ env.DATABASE_CONTAINER_NAME }}-trivy-scan-results.sarif'
 
       -
-        name: Build and push ${{ env.DATABASE_CONTAINER_NAME }} container
+        name: Build and push Database container
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -74,7 +80,7 @@ jobs:
           tags: webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}
 
       -
-        name: Build and push ${{ env.DATABASE_CONTAINER_NAME }} container with version number
+        name: Build and push Database container with version number
         uses: docker/build-push-action@v5
         with:
           context: .
