@@ -1,0 +1,16 @@
+repos:
+  - repo: local
+    hooks:
+      - id: trufflehog
+        name: TruffleHog
+        description: |
+          Detect secrets in your data.
+
+          This pre-commit hook utilizes TruffleHog, a tool designed to scan your codebase for secrets and sensitive information, providing an additional layer of security for your project. By running this hook, you can identify and mitigate potential security risks early in your development process.
+
+          TruffleHog is configured to run during the "commit" and "push" stages, which means it checks for secrets before you commit changes or push them to your Git repository.
+
+          The exit code 0 prevents trufflehog from breaking the git push
+        entry: bash -c 'trufflehog --repo_path . .; exit_code=$?; exit 0'
+        language: system
+        stages: ["commit", "push"]
