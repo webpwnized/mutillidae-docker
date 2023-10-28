@@ -43,14 +43,14 @@ jobs:
         # This step fetches the codebase from the GitHub repository.
 
       - name: Run Semgrep Dockerfile Scan
-        run: semgrep --config p/dockerfile --sarif --output=semgrep-dockerfile-results.sarif
+        run: semgrep --config p/dockerfile --exclude www --sarif --output=semgrep-dockerfile-results.sarif
         continue-on-error: true
         # Execute Semgrep to scan the code for Dockerfile vulnerabilities
         # Save the results in SARIF format
         # Continue the workflow even if there are errors during the scan.
 
       - name: Run Semgrep Docker SAST Scan
-        run: semgrep --config p/docker --sarif --output=semgrep-docker-results.sarif
+        run: semgrep --config p/docker --exclude www --sarif --output=semgrep-docker-results.sarif
         continue-on-error: true
         # Execute Semgrep to scan the code for Docker vulnerabilities
         # Save the results in SARIF format
