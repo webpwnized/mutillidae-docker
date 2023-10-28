@@ -1,0 +1,61 @@
+# Define the name of the workflow.
+name: Scan Dockerfile with Hadolint
+
+# Define when the workflow should be triggered.
+on:
+  # Trigger the workflow on the following events:
+
+  # Scan changed files in Pull Requests (diff-aware scanning).
+  pull_request: {}
+
+  # Trigger the workflow on-demand through the GitHub Actions interface.
+  workflow_dispatch: {}
+
+  # Scan mainline branches (main and development) and report all findings.
+  push:
+    branches: ["main", "development"]
+
+# Define the jobs that should be executed in this workflow.
+jobs:
+  hadolint-job:
+    name: Hadolint Github Action
+
+    # Specify the runner environment. Use the latest version of Ubuntu.
+    runs-on: ubuntu-latest
+
+    # Define permissions for specific GitHub Actions.
+    permissions:
+      actions: read          # Permission to read GitHub Actions.
+      contents: read         # Permission to read repository contents.
+      security-events: write # Permission to write security events.
+
+    # Define the steps that should be executed in this job.
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        # Step: Checkout code
+        # Action to check out the code from the repository.
+        # This step fetches the codebase from the GitHub repository.
+
+      - name: Run Hadolint Scan with SARIF result
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          path: .
+          # when provided with a directory on output_path
+          # it will generate the specified reports file named 'results.{extension}'
+          # in this example it will generate: results.sarif
+          dockerfile: Dockerfile
+          recursive: true
+          output-file: hadolint-results.sarif
+          no-fail: true
+          format: 'sarif'
+          failure-threshold: 'error'
+          continue-on-error: true
+
+      - name: Upload Results to GitHub Advanced Security Dashboard
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: hadolint-results.sarif
+          category: "Hadolint Dockerfile Scan"
+        if: always()
+        # Upload the SARIF file with scan results to the GitHub Advanced Security Dashboard.
