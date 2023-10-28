@@ -16,5 +16,8 @@ RUN apt-get update && \
     apt-get -y autoremove && \
     apt-get clean
 
+# Remove the apt-get lists after installation
+rm -rf /var/lib/apt/lists/*
+
 # Open port 80 through the firewall
 EXPOSE 80

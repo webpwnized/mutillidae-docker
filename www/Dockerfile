@@ -40,6 +40,8 @@ RUN apt-get update && \
     apt-get clean && \
     useradd -M phinius -p 123456
 
+# Remove the apt-get lists after installation
+rm -rf /var/lib/apt/lists/*
 
 # #################################### #
 # Configure the PHP application server #

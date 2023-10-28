@@ -18,5 +18,8 @@ RUN apt-get update && \
     apt-get -y autoremove && \
     apt-get clean
 
+# Remove the apt-get lists after installation
+rm -rf /var/lib/apt/lists/*
+
 # Open port 80 to the webserver
 EXPOSE 80
