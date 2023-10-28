@@ -16,10 +16,9 @@ ENV LDAP_CONFIG_PASSWORD="mutillidae"
 ENV LDAP_TLS="false"
 
 # Patch the container
-# RUN apt-get update && \
-#     apt-get -y upgrade && \
-#     apt-get -y autoremove && \
-#     apt-get clean
-
 # Remove the apt-get lists after installation
-# rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && \
+#    apt-get -y upgrade && \
+#    apt-get -y autoremove && \
+#    apt-get clean && \
+#    rm -rf /var/lib/apt/lists/*

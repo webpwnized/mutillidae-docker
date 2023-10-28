@@ -11,13 +11,12 @@ ENV PHPLDAPADMIN_LDAP_HOSTS="directory"
 ENV PHPLDAPADMIN_HTTPS="false"
 
 # Patch the container
+# Remove the apt-get lists after installation
 RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get -y autoremove && \
-    apt-get clean
-
-# Remove the apt-get lists after installation
-rm -rf /var/lib/apt/lists/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Open port 80 through the firewall
 EXPOSE 80

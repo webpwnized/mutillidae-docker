@@ -2,7 +2,7 @@
 
 # Start with recent version of PHP with Apache 
 # https://hub.docker.com/_/php?tab=tags&page=1&ordering=last_updated&name=apache
-FROM php:8.2.11-apache
+FROM php:8.2.12-apache
 
 # Arguments with default values, but can be overidden
 ARG DATABASE_HOST="database"
@@ -25,6 +25,7 @@ ARG DATABASE_PORT="3306"
 # Copy the mutillidae project to Apache web files directory
 # uninstall git
 # Patch the container
+# Remove the apt-get lists after installation
 # Add the user for Lab #17
 RUN apt-get update && \
     apt-get install -y libldap2-dev && docker-php-ext-install ldap && \
@@ -38,10 +39,8 @@ RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get -y autoremove && \
     apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
     useradd -M phinius -p 123456
-
-# Remove the apt-get lists after installation
-rm -rf /var/lib/apt/lists/*
 
 # #################################### #
 # Configure the PHP application server #
