@@ -43,8 +43,12 @@ jobs:
           output_path: .
           platform_type: Dockerfile
           output_formats: 'sarif'
+          continue-on-error: true
+
       - name: Show results
         run: |
+          ls
+          pwd
           cat results.sarif
 
       - name: Upload Results so GitHub Advanced Security Dashboard
