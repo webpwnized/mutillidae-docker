@@ -1,4 +1,4 @@
-name: Scan DOckerfile with KICS
+name: Scan Dockerfile with KICS
 
 on:
     # Trigger the workflow on the following events:
@@ -32,9 +32,9 @@ jobs:
         # Step: Checkout code
         # Action to check out the code from the repository.
         # This step fetches the codebase from the GitHub repository.
-      
+
       - name: Run KICS Scan with SARIF result
-        uses: checkmarx/kics-github-action@latest
+        uses: Checkmarx/kics-github-action@v1.7.0
         with:
           path: .
           # when provided with a directory on output_path
