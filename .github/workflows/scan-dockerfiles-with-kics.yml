@@ -41,7 +41,7 @@ jobs:
           # it will generate the specified reports file named 'results.{extension}'
           # in this example it will generate: results.sarif
           output_path: .
-          platform_type: docker
+          platform_type: Dockerfile
           output_formats: 'sarif'
       - name: Show results
         run: |
