@@ -26,18 +26,18 @@ ARG DATABASE_PORT="3306"
 # uninstall git
 # Patch the container
 # Add the user for Lab #17
-RUN apt update && \
-    apt install -y libldap2-dev && docker-php-ext-install ldap && \
-    apt install -y libxml2-dev && docker-php-ext-install xml && \
-    apt install -y libonig-dev && docker-php-ext-install mbstring && \
-    apt install -y libcurl4-openssl-dev && docker-php-ext-install curl && \ 
+RUN apt-get update && \
+    apt-get install -y libldap2-dev && docker-php-ext-install ldap && \
+    apt-get install -y libxml2-dev && docker-php-ext-install xml && \
+    apt-get install -y libonig-dev && docker-php-ext-install mbstring && \
+    apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl && \ 
     docker-php-ext-install mysqli && \
-    apt install -y dnsutils ntp iputils-ping git && \
+    apt-get install -y dnsutils ntp iputils-ping git && \
     git clone https://github.com/webpwnized/mutillidae.git /var/www/mutillidae && \
-    apt remove -y git && \
-    apt -y upgrade && \
-    apt -y autoremove && \
-    apt clean && \
+    apt-get remove -y git && \
+    apt-get -y upgrade && \
+    apt-get -y autoremove && \
+    apt-get clean && \
     useradd -M phinius -p 123456
 
 

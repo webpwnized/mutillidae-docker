@@ -41,17 +41,26 @@ jobs:
         uses: hadolint/hadolint-action@v3.1.0
         with:
           path: .
-          # when provided with a directory on output_path
-          # it will generate the specified reports file named 'results.{extension}'
-          # in this example it will generate: results.sarif
+          # Specify the directory to scan (in this case, the root directory).
+          
           dockerfile: Dockerfile
+          # Specify the name of the Dockerfile to be scanned.
+          
           recursive: true
+          # Enable recursive scanning to include subdirectories.
+      
           output-file: hadolint-results.sarif
+          # Define the name of the SARIF format output file.
+      
           no-fail: true
+          # Continue the workflow even if there are issues found (no-fail set to true).
+      
           format: 'sarif'
+          # Specify the format of the scan results, in this case, SARIF format.
+      
           failure-threshold: 'error'
-          continue-on-error: true
-
+          # Define the threshold for failure based on severity (e.g., 'error').
+      
       - name: Upload Results to GitHub Advanced Security Dashboard
         uses: github/codeql-action/upload-sarif@v2
         with:
