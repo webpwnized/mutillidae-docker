@@ -104,5 +104,6 @@ RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
 
 
 # Open ports 80,443 in the container firewall
+# This exposes HTTP and HTTPS
 EXPOSE 80
 EXPOSE 443
