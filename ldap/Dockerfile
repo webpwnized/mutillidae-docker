@@ -15,6 +15,7 @@ ENV LDAP_ADMIN_PASSWORD="mutillidae"
 ENV LDAP_CONFIG_PASSWORD="mutillidae"
 ENV LDAP_TLS="false"
 
+# Commented out because patching caused issues
 # Patch the container
 # Remove the apt-get lists after installation
 # RUN apt-get update && \
