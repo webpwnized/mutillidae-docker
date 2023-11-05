@@ -51,26 +51,25 @@ jobs:
           # Starting containers using Docker Compose.
           docker-compose -f docker-compose.yml up -d;
 
-      # Step 4: Run Database Build Script
+      # Step 4: Load Users into LDAP Directory
+      - name: Load Users into LDAP Directory
+        run: |
+
+          # Uploading Mutillidae LDIF file to LDAP directory server.
+          # ldapadd will exit with non-zero exit code if user already exists in the directory
+          # Use || true to force zero exit code
+          CURRENT_DIRECTORY=$(pwd);
+          ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap:// -f $CURRENT_DIRECTORY/ldap/ldif/mutillidae.ldif || true;
+
+      # Step 5: Run Database Build Script
       - name: Run Database Build Script
         run: |
 
           # Waiting for the database to start.
-          sleep 10;
+          sleep 30;
 
           # Requesting Mutillidae database be built.
           curl http://127.0.0.1/set-up-database.php;
-
-      # Step 5: Load Users into LDAP Directory
-      - name: Load Users into LDAP Directory
-        # ldapadd will exit with the exit code equal to the number of users added into the LDAP directory
-        # Use "if always()"" to override Github Action failure
-        if: always()
-        run: |
-
-          # Uploading Mutillidae LDIF file to LDAP directory server.
-          CURRENT_DIRECTORY=$(pwd);
-          ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap:// -f $CURRENT_DIRECTORY/ldap/ldif/mutillidae.ldif;
 
       # Step 6: Run StackHawk Scan
       - name: Run StackHawk Scan with SARIF result
