@@ -72,7 +72,7 @@ jobs:
           curl http://127.0.0.1/set-up-database.php;
 
       # Step 6: Check if web application up
-      - name: Check if web application up
+      - name: Check Web Application
         run: |
 
           # This should return the index.php home page content
