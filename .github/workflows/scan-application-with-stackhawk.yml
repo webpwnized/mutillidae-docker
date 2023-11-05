@@ -41,9 +41,9 @@ jobs:
         run: |
 
           # Set up hosts file
-          echo "" >> /etc/hosts
-          echo "127.0.0.1	localhost mutillidae.localhost www.mutillidae.localhost mutillidae" >> /etc/hosts
-          echo "127.0.0.2	cors.mutillidae.localhost webservice.mutillidae.localhost api.mutillidae.localhost" >> /etc/hosts
+          sudo echo "" >> /etc/hosts
+          sudo echo "127.0.0.1	localhost mutillidae.localhost www.mutillidae.localhost mutillidae" >> /etc/hosts
+          sudo echo "127.0.0.2	cors.mutillidae.localhost webservice.mutillidae.localhost api.mutillidae.localhost" >> /etc/hosts
 
           # Show contents of /etc/hosts to debug
           cat /etc/hosts
