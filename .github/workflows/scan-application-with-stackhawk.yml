@@ -49,15 +49,18 @@ jobs:
           # Requesting Mutillidae database be built.
           curl http://127.0.0.1/set-up-database.php;
 
+          # Install LDAP Utilities including ldapadd
+          apt-get install ldap-utils
+
           # Uploading Mutillidae LDIF file to LDAP directory server.
           CURRENT_DIRECTORY=$(pwd);
           ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap:// -f $CURRENT_DIRECTORY/ldap/ldif/mutillidae.ldif;
 
-      # Step 3: Run StackHawk Scan with SARIF result.
+      # Step 3: Run StackHawk Scan
       - name: Run StackHawk Scan with SARIF result
         uses: stackhawk/hawkscan-action@v2
         with:
           apiKey: ${{ secrets.HAWK_API_KEY }}     # Secret key for authentication.
           configurationFiles: .github/workflows/config/stackhawk.yml  # Path to configuration file.
           codeScanningAlerts: true   # Enable code scanning alerts.
-          githubToken: ${{ github.token }}   # GitHub token for authentication.
+          githubToken: ${{ github.token }}   # GitHub token for authentication to Code Scanning Alerts
