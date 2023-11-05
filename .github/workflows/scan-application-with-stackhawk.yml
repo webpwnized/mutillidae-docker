@@ -65,14 +65,21 @@ jobs:
       - name: Run Database Build Script
         run: |
 
-          # Waiting for the database to start.
+          # Wait for the database to start.
           sleep 30;
 
           # Requesting Mutillidae database be built.
           curl http://127.0.0.1/set-up-database.php;
 
+      # Step 6: Check if web application up
+      - name: Check if web application up
+        run: |
+
+          # This should return the index.php home page content
+          curl http://127.0.0.1:80/;
+
       # Step 6: Run StackHawk Scan
-      - name: Run StackHawk Scan with SARIF result
+      - name: Run StackHawk Scan
         uses: stackhawk/hawkscan-action@v2
         with:
           apiKey: ${{ secrets.HAWK_API_KEY }}     # Secret key for authentication.
