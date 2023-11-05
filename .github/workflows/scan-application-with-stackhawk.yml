@@ -1,0 +1,62 @@
+# Define the name of the workflow.
+name: Scan Application with StackHawk
+
+# Define when the workflow should be triggered.
+on:
+  # Trigger the workflow on the following events:
+
+  # Scan changed files in Pull Requests (diff-aware scanning).
+  pull_request: {}
+
+  # Trigger the workflow on-demand through the GitHub Actions interface.
+  workflow_dispatch: {}
+
+  # Scan mainline branches (main and development) and report all findings.
+  push:
+    branches: ["main", "development"]
+
+# Define the jobs that should be executed in this workflow.
+jobs:
+  # Job to run StackHawk HawkScan as a GitHub Action.
+  hawkscan-job:
+    name: StackHawk HawkScan Github Action
+
+    # Specify the runner environment. Use the latest version of Ubuntu.
+    runs-on: ubuntu-latest
+
+    # Define permissions for specific GitHub Actions.
+    permissions:
+      actions: read          # Permission to read GitHub Actions.
+      contents: read         # Permission to read repository contents.
+      security-events: write # Permission to write security events.
+
+    # Define the steps that should be executed in this job.
+    steps:
+      # Step 1: Checkout code from the repository.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Start and Run Containers.
+      - name: Start and Run Containers
+        run: |
+          # Starting containers using Docker Compose.
+          docker-compose -f docker-compose.yml up -d;
+
+          # Waiting for the database to start.
+          sleep 10;
+
+          # Requesting Mutillidae database be built.
+          curl http://mutillidae.localhost/set-up-database.php;
+
+          # Uploading Mutillidae LDIF file to LDAP directory server.
+          CURRENT_DIRECTORY=$(pwd);
+          ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap:// -f $CURRENT_DIRECTORY/ldap/ldif/mutillidae.ldif;
+
+      # Step 3: Run StackHawk Scan with SARIF result.
+      - name: Run StackHawk Scan with SARIF result
+        uses: stackhawk/hawkscan-action@v2
+        with:
+          apiKey: ${{ secrets.HAWK_API_KEY }}     # Secret key for authentication.
+          configurationFiles: .github/workflows/config/stackhawk.yml  # Path to configuration file.
+          codeScanningAlerts: true   # Enable code scanning alerts.
+          githubToken: ${{ github.token }}   # GitHub token for authentication.
