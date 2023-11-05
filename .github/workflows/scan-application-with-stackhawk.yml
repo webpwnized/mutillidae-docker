@@ -39,6 +39,15 @@ jobs:
       # Step 2: Start and Run Containers.
       - name: Start and Run Containers
         run: |
+
+          # Set up hosts file
+          echo "" >> /etc/hosts
+          echo "127.0.0.1	localhost mutillidae.localhost www.mutillidae.localhost mutillidae" >> /etc/hosts
+          echo "127.0.0.2	cors.mutillidae.localhost webservice.mutillidae.localhost api.mutillidae.localhost" >> /etc/hosts
+
+          # Show contents of /etc/hosts to debug
+          cat /etc/hosts
+
           # Starting containers using Docker Compose.
           docker-compose -f docker-compose.yml up -d;
 
