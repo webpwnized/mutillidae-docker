@@ -50,7 +50,7 @@ jobs:
           curl http://127.0.0.1/set-up-database.php;
 
           # Install LDAP Utilities including ldapadd
-          apt-get install ldap-utils
+          sudo apt-get install ldap-utils
 
           # Uploading Mutillidae LDIF file to LDAP directory server.
           CURRENT_DIRECTORY=$(pwd);
