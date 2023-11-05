@@ -5,4 +5,6 @@ app:
   host: http://127.0.0.1:80
 hawk:
   spider:
+    base: true
     seedPaths: ["/index.php"]
+    maxDurationMinutes: 10
