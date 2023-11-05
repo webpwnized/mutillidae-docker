@@ -36,16 +36,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Start and Run Containers.
-      - name: Start and Run Containers
+      # Step 2: Install LDAP Utilities
+      - name: Install LDAP Utilities
         run: |
 
           # Install LDAP Utilities including ldapadd
           sudo apt-get update
           sudo apt-get install -y ldap-utils
-        
+
+      # Step 3: Build and Start Containers 
+      - name: Build and Start Containers
+        run: |
+
           # Starting containers using Docker Compose.
           docker-compose -f docker-compose.yml up -d;
+
+      # Step 4: Run Database Build Script
+      - name: Run Database Build Script
+        run: |
 
           # Waiting for the database to start.
           sleep 10;
@@ -53,15 +61,18 @@ jobs:
           # Requesting Mutillidae database be built.
           curl http://127.0.0.1/set-up-database.php;
 
+      # Step 5: Load Users into LDAP Directory
+      - name: Load Users into LDAP Directory
+        # ldapadd will exit with the exit code equal to the number of users added into the LDAP directory
+        # Use "if always()"" to override Github Action failure
+        if: always()
+        run: |
+
           # Uploading Mutillidae LDIF file to LDAP directory server.
           CURRENT_DIRECTORY=$(pwd);
           ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap:// -f $CURRENT_DIRECTORY/ldap/ldif/mutillidae.ldif;
 
-          # ldapadd will exit with the exit code equal to the number of users added into the LDAP directory
-          # Exit with exit code 0 to prevent the Github Action from failing
-          exit 0;
-
-      # Step 3: Run StackHawk Scan
+      # Step 6: Run StackHawk Scan
       - name: Run StackHawk Scan with SARIF result
         uses: stackhawk/hawkscan-action@v2
         with:
