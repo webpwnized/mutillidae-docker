@@ -76,7 +76,7 @@ jobs:
         run: |
 
           # This should return the index.php home page content
-          curl http://127.0.0.1:80/;
+          curl http://127.0.0.1:8888/;
 
       # Step 6: Run StackHawk Scan
       - name: Run StackHawk Scan

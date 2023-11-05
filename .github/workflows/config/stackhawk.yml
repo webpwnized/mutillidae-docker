@@ -2,7 +2,7 @@
 app:
   applicationId: c6d7fc3f-699d-4ea3-acb9-b47b6d63f222
   env: Development
-  host: http://127.0.0.1:80
+  host: http://127.0.0.1:8888
 hawk:
   spider:
     base: true

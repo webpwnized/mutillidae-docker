@@ -26,6 +26,7 @@ services:
     networks:
       - datanet   
 
+# Port 8888 is for StackHawk to scan
   www:
     container_name: www
     depends_on:
@@ -37,7 +38,11 @@ services:
         dockerfile: Dockerfile
     ports:
       - 127.0.0.1:80:80
+      - 127.0.0.1:8888:80
       - 127.0.0.1:443:443
+      - 127.0.0.2:80:80
+      - 127.0.0.2:8888:80
+      - 127.0.0.2:443:443
     networks:
       - datanet
       - ldapnet
