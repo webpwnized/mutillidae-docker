@@ -8,3 +8,4 @@ hawk:
     base: true
     seedPaths: ["/index.php"]
     maxDurationMinutes: 10
+
