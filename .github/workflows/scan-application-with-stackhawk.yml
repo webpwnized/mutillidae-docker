@@ -40,14 +40,6 @@ jobs:
       - name: Start and Run Containers
         run: |
 
-          # Set up hosts file
-          sudo echo "" >> /etc/hosts
-          sudo echo "127.0.0.1	localhost mutillidae.localhost www.mutillidae.localhost mutillidae" >> /etc/hosts
-          sudo echo "127.0.0.2	cors.mutillidae.localhost webservice.mutillidae.localhost api.mutillidae.localhost" >> /etc/hosts
-
-          # Show contents of /etc/hosts to debug
-          cat /etc/hosts
-
           # Starting containers using Docker Compose.
           docker-compose -f docker-compose.yml up -d;
 
@@ -55,7 +47,7 @@ jobs:
           sleep 10;
 
           # Requesting Mutillidae database be built.
-          curl http://mutillidae.localhost/set-up-database.php;
+          curl http://127.0.0.1/set-up-database.php;
 
           # Uploading Mutillidae LDIF file to LDAP directory server.
           CURRENT_DIRECTORY=$(pwd);
