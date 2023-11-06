@@ -13,7 +13,7 @@ on:
 
   # Scan mainline branches (main and development) and report all findings.
   push:
-    branches: ["main", "development"]
+    branches: ["main"]
 
 # Define the jobs that should be executed in this workflow.
 jobs:
@@ -78,7 +78,7 @@ jobs:
           # This should return the index.php home page content
           curl http://127.0.0.1:8888/;
 
-      # Step 6: Run StackHawk Scan
+      # Step 7: Run StackHawk Scan
       - name: Run StackHawk Scan
         uses: stackhawk/hawkscan-action@v2
         with:
