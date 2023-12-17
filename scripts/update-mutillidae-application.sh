@@ -17,4 +17,4 @@ echo "Updating the Mutillidae application installed in the running 'www' contain
 
 # Use 'docker exec' to execute commands inside the 'www' container.
 # First, ensure Git is installed by running 'apt install git -y' within the container.
-docker exec -it www sh -c "apt install git -y; cd /var/www/mutillidae; git pull"
+docker exec -it www sh -c "apt update; apt install git -y; cd /var/www/mutillidae; git pull"
