@@ -18,6 +18,13 @@ env:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    
+    # Define permissions for specific actions
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      
     steps:
       # Step 1: Prepare the runner and check out the codebase.
       - name: Check out the codebase

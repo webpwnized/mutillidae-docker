@@ -39,10 +39,7 @@ jobs:
 
       - name: Run Hadolint Scan with SARIF result
         uses: hadolint/hadolint-action@v3.1.0
-        with:
-          path: .
-          # Specify the directory to scan (in this case, the root directory).
-          
+        with:   
           dockerfile: Dockerfile
           # Specify the name of the Dockerfile to be scanned.
           
