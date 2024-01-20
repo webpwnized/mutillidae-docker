@@ -1,0 +1,25 @@
+# -- stackhawk configuration for mutillidae --
+app:
+  applicationId: 7fae6d2e-9439-4967-b4fd-3372f03ce6f1 # <- Make this YOUR Application ID from YOUR StackHawk account
+  env: Development # (required)
+  host: http://mutillidae.local:8888 # (required)
+  excludePaths:
+    - "/set-up-database.php"
+    - "/index.php?do=logout"
+  authentication:
+    loggedInIndicator: "\\QLogged In User\\E"
+    loggedOutIndicator: "\\QNot Logged In\\E"
+    usernamePassword:
+      type: FORM
+      loginPath: /index.php?page=login.php
+      loginPagePath: /index.php?page=login.php
+      usernameField: username
+      passwordField: password
+      scanUsername: "jeremy"
+      scanPassword: "password"
+    cookieAuthorization:
+      cookieNames:
+        - "JSESSIONID"
+    testPath:
+      path: /index.php?page=edit-account-profile.php
+      fail: "User.*profile.*not.*found.*"
