@@ -47,10 +47,10 @@ jobs:
           output_path: .
           platform_type: Dockerfile
           output_formats: 'sarif'
-          continue-on-error: true
+          ignore_on_exit: results
 
       - name: Upload Results to GitHub Advanced Security Dashboard
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: results.sarif
           category: "KICS Dockerfile Scan"
