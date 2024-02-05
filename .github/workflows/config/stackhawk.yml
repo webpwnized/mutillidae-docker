@@ -1,6 +1,6 @@
 # -- stackhawk configuration for mutillidae --
 app:
-  applicationId: 7fae6d2e-9439-4967-b4fd-3372f03ce6f1 # <- Make this YOUR Application ID from YOUR StackHawk account
+  applicationId: c6d7fc3f-699d-4ea3-acb9-b47b6d63f222 # <- Make this YOUR Application ID from YOUR StackHawk account
   env: Development # (required)
   host: http://mutillidae.local:8888 # (required)
   excludePaths:
