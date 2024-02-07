@@ -2,7 +2,7 @@
 app:
   applicationId: c6d7fc3f-699d-4ea3-acb9-b47b6d63f222 # <- Make this YOUR Application ID from YOUR StackHawk account
   env: Development # (required)
-  host: http://mutillidae.local:8888 # (required)
+  host: http://127.0.0.1:8888/ # (required)
   excludePaths:
     - "/set-up-database.php"
     - "/index.php?do=logout"
