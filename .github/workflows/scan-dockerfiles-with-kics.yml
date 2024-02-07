@@ -50,7 +50,7 @@ jobs:
           ignore_on_exit: results
 
       - name: Upload Results to GitHub Advanced Security Dashboard
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@main
         with:
           sarif_file: results.sarif
           category: "KICS Dockerfile Scan"
