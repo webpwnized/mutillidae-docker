@@ -57,7 +57,7 @@ jobs:
         # Extracts the directory name from the Dockerfile path and sets it as an environment variable.
 
       - name: Run Hadolint Scan with SARIF result
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@master
         with:
           dockerfile: ${{ matrix.dockerfile }}
           # Specify the Dockerfile from the matrix to be scanned.

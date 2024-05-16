@@ -13,7 +13,7 @@ on:
 
   # Scan mainline branches (main and development) and report all findings.
   push:
-    branches: ["main", "development"]
+    branches: ["development"]
 
 # Define the jobs that should be executed in this workflow.
 jobs:
@@ -38,7 +38,7 @@ jobs:
         # This step fetches the codebase from the GitHub repository.
 
       - name: Run KICS Scan with SARIF result
-        uses: Checkmarx/kics-github-action@v1.7.0
+        uses: Checkmarx/kics-github-action@master
         with:
           path: .
           # when provided with a directory on output_path
@@ -48,6 +48,9 @@ jobs:
           platform_type: Dockerfile
           output_formats: 'sarif'
           ignore_on_exit: results
+
+      - name: View Results
+        run: cat results.sarif
 
       - name: Upload Results to GitHub Advanced Security Dashboard
         uses: github/codeql-action/upload-sarif@main

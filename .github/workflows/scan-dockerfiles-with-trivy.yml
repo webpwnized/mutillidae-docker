@@ -1,11 +1,18 @@
 name: scan-dockerfiles-with-trivy
 
+# Define when the workflow should be triggered.
 on:
+  # Trigger the workflow on the following events:
+
+  # Scan changed files in Pull Requests (diff-aware scanning).
+  pull_request: {}
+
+  # Trigger the workflow on-demand through the GitHub Actions interface.
+  workflow_dispatch: {}
+
+  # Scan mainline branches (main and development) and report all findings.
   push:
-    branches:
-      - development
-      - main
-  pull_request:
+    branches: ["development"]
 
 jobs:
   build:
@@ -33,6 +40,9 @@ jobs:
           exit-code: '0'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: View Results
+        run: cat dockerfile-trivy-scan-results.sarif
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@main

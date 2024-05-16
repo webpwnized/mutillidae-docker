@@ -13,7 +13,7 @@ on:
 
   # Scan mainline branches (main and development) and report all findings.
   push:
-    branches: ["main"]
+    branches: ["development"]
 
 # Define the jobs that should be executed in this workflow.
 jobs:

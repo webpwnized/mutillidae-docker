@@ -19,7 +19,7 @@ app:
       scanPassword: "password"
     cookieAuthorization:
       cookieNames:
-        - "JSESSIONID"
+        - "PHPSESSID"
     testPath:
       path: /index.php?page=edit-account-profile.php
       fail: "User.*profile.*not.*found.*"

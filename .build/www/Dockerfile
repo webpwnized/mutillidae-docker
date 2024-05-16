@@ -24,7 +24,6 @@ ARG DATABASE_PASSWORD="mutillidae"
 ARG DATABASE_NAME="mutillidae"
 ARG DATABASE_PORT="3306"
 
-
 # ######################### #
 # Install software packages #
 # ######################### #
@@ -41,17 +40,17 @@ ARG DATABASE_PORT="3306"
 # Remove the apt-get lists after installation
 # Add the user for Lab #17
 RUN apt-get update && \
-    apt-get install -y libldap2-dev && docker-php-ext-install ldap && \
-    apt-get install -y libxml2-dev && docker-php-ext-install xml && \
-    apt-get install -y libonig-dev && docker-php-ext-install mbstring && \
-    apt-get install -y libcurl4-openssl-dev && docker-php-ext-install curl && \ 
+    apt-get install --no-install-recommends -y libldap2-dev && docker-php-ext-install ldap && \
+    apt-get install --no-install-recommends -y libxml2-dev && docker-php-ext-install xml && \
+    apt-get install --no-install-recommends -y libonig-dev && docker-php-ext-install mbstring && \
+    apt-get install --no-install-recommends -y libcurl4-openssl-dev && docker-php-ext-install curl && \ 
     docker-php-ext-install mysqli && \
-    apt-get install -y dnsutils ntp iputils-ping git && \
+    apt-get install --no-install-recommends -y dnsutils ntp iputils-ping git && \
     cd /tmp && \
     git clone https://github.com/webpwnized/mutillidae.git mutillidae && \
     cp -r mutillidae/src /var/www/mutillidae && \
     rm -rf /tmp/mutillidae && \ 
-    apt-get remove -y git && \
+    apt-get remove --no-install-recommends -y git && \
     apt-get -y upgrade && \
     apt-get -y autoremove && \
     apt-get clean && \
@@ -68,7 +67,6 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
     sed -i 's/allow_url_include = Off/allow_url_include = On/g' /usr/local/etc/php/php.ini && \
     sed -i 's/allow_url_fopen = Off/allow_url_fopen = On/g' /usr/local/etc/php/php.ini && \
     sed -i 's/expose_php = Off/expose_php = On/g' /usr/local/etc/php/php.ini
-
 
 # ######################### #
 # Configure the application #
@@ -117,7 +115,6 @@ RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
     a2enmod ssl && \
     a2dissite 000-default && \
     a2ensite mutillidae
-
 
 # Open ports 80,443 in the container firewall
 # This exposes HTTP and HTTPS
