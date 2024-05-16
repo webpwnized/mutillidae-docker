@@ -6,14 +6,6 @@ on:
   push:
     branches: ["main"]
 
-# Define environment variables for better organization.
-env:
-  DATABASE_CONTAINER_NAME: "database"
-  DATABASE_ADMIN_CONTAINER_NAME: "database_admin"
-  LDAP_CONTAINER_NAME: "ldap"
-  LDAP_ADMIN_CONTAINER_NAME: "ldap_admin"
-  WEB_CONTAINER_NAME: "www"
-
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -24,6 +16,16 @@ jobs:
       contents: read
       security-events: write
       
+    # Use matrix strategy to define multiple Dockerfiles to scan.
+    strategy:
+      matrix:
+        container_name:
+          - database
+          - database_admin
+          - ldap
+          - ldap_admin
+          - www
+
     steps:
       # Step 1: Prepare the runner and check out the codebase.
       - name: Check out the codebase
@@ -54,230 +56,47 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # ----------------------------------------------------------------------------
-      # Database Container
+      # Loop Over Each Container
       # ----------------------------------------------------------------------------
-      - 
-        name: Build and Export Database Container to Docker
+      - name: Build and Export Container to Docker
         uses: docker/build-push-action@master
         with:
           context: .
-          file: .build/${{ env.DATABASE_CONTAINER_NAME }}/Dockerfile
+          file: .build/${{ env.container_name }}/Dockerfile
           load: true
-          tags: webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}
+          tags: webpwnized/mutillidae:${{ env.container_name }}
 
-      - 
-        name: Run Trivy vulnerability scanner on Database Container
+      - name: Run Trivy vulnerability scanner on Container
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}'
+          image-ref: 'webpwnized/mutillidae:${{ env.container_name }}'
           format: 'sarif'
-          output: '${{ env.DATABASE_CONTAINER_NAME }}-trivy-scan-results.sarif'
-
-      - 
-        name: Upload Database Container Trivy scan results to GitHub Security tab
+          output: '${{ env.container_name }}-trivy-scan-results.sarif'
+    
+      - name: Print Trivy scan results to the console
+        id: print_results
+        run: |
+          cat '${{ env.container_name }}-trivy-scan-results.sarif'
+        shell: bash
+      
+      - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@main
         with:
-          sarif_file: '${{ env.DATABASE_CONTAINER_NAME }}-trivy-scan-results.sarif'
-          category: ${{ env.DATABASE_CONTAINER_NAME }}
+          sarif_file: '${{ env.container_name }}-trivy-scan-results.sarif'
+          category: ${{ env.container_name }}
 
-      -
-        name: Build and push Database container
+      - name: Build and push Container
         uses: docker/build-push-action@master
         with:
           context: .
-          file: .build/${{ env.DATABASE_CONTAINER_NAME }}/Dockerfile
+          file: .build/${{ env.container_name }}/Dockerfile
           push: true
-          tags: webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}
+          tags: webpwnized/mutillidae:${{ env.container_name }}
 
-      -
-        name: Build and push Database container with version number
+      - name: Build and push Container with version number
         uses: docker/build-push-action@master
         with:
           context: .
-          file: .build/${{ env.DATABASE_CONTAINER_NAME }}/Dockerfile
+          file: .build/${{ env.container_name }}/Dockerfile
           push: true
-          tags: webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}-${{ env.VERSION }}
-
-      # ----------------------------------------------------------------------------
-      # Database Admin Container
-      # ----------------------------------------------------------------------------
-
-      -
-        name: Build and Export Database Admin Container to Docker
-        uses: docker/build-push-action@master
-        with:
-          context: .
-          file: .build/${{ env.DATABASE_ADMIN_CONTAINER_NAME }}/Dockerfile
-          load: true
-          tags: webpwnized/mutillidae:${{ env.DATABASE_ADMIN_CONTAINER_NAME }}
-
-      - 
-        name: Run Trivy vulnerability scanner on Database Admin Container
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'webpwnized/mutillidae:${{ env.DATABASE_ADMIN_CONTAINER_NAME }}'
-          format: 'sarif'
-          output: '${{ env.DATABASE_ADMIN_CONTAINER_NAME }}-trivy-scan-results.sarif'
-
-      - 
-        name: Upload Database Admin Container Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@main
-        with:
-          sarif_file: '${{ env.DATABASE_ADMIN_CONTAINER_NAME }}-trivy-scan-results.sarif'
-          category: ${{ env.DATABASE_ADMIN_CONTAINER_NAME }}
-
-      -
-        name: Build and push Database Admin Container
-        uses: docker/build-push-action@master
-        with:
-          context: .
-          file: .build/${{ env.DATABASE_ADMIN_CONTAINER_NAME }}/Dockerfile
-          push: true
-          tags: webpwnized/mutillidae:${{ env.DATABASE_ADMIN_CONTAINER_NAME }}
-
-      -
-        name: Build and push Database Admin Container with version number
-        uses: docker/build-push-action@master
-        with:
-          context: .
-          file: .build/${{ env.DATABASE_ADMIN_CONTAINER_NAME }}/Dockerfile
-          push: true
-          tags: webpwnized/mutillidae:${{ env.DATABASE_ADMIN_CONTAINER_NAME }}-${{ env.VERSION }}
-
-      # ----------------------------------------------------------------------------
-      # LDAP Container
-      # ----------------------------------------------------------------------------
-
-      -
-          name: Build and Export LDAP Container to Docker
-          uses: docker/build-push-action@master
-          with:
-            context: .
-            file: .build/${{ env.LDAP_CONTAINER_NAME }}/Dockerfile
-            load: true
-            tags: webpwnized/mutillidae:${{ env.LDAP_CONTAINER_NAME }}
-  
-      - 
-          name: Run Trivy vulnerability scanner on LDAP Container
-          uses: aquasecurity/trivy-action@master
-          with:
-            image-ref: 'webpwnized/mutillidae:${{ env.LDAP_CONTAINER_NAME }}'
-            format: 'sarif'
-            output: '${{ env.LDAP_CONTAINER_NAME }}-trivy-scan-results.sarif'
-  
-      - 
-          name: Upload LDAP Container Trivy scan results to GitHub Security tab
-          uses: github/codeql-action/upload-sarif@main
-          with:
-            sarif_file: '${{ env.LDAP_CONTAINER_NAME }}-trivy-scan-results.sarif'
-            category: ${{ env.LDAP_CONTAINER_NAME }}
-  
-      -
-          name: Build and push LDAP Container
-          uses: docker/build-push-action@master
-          with:
-            context: .
-            file: .build/${{ env.LDAP_CONTAINER_NAME }}/Dockerfile
-            push: true
-            tags: webpwnized/mutillidae:${{ env.LDAP_CONTAINER_NAME }}
-  
-      -
-          name: Build and push LDAP Container with version number
-          uses: docker/build-push-action@master
-          with:
-            context: .
-            file: .build/${{ env.LDAP_CONTAINER_NAME }}/Dockerfile
-            push: true
-            tags: webpwnized/mutillidae:${{ env.LDAP_CONTAINER_NAME }}-${{ env.VERSION }}
-
-      # ----------------------------------------------------------------------------
-      # LDAP Admin Container
-      # ----------------------------------------------------------------------------
-
-      -
-          name: Build and Export LDAP Admin Container to Docker
-          uses: docker/build-push-action@master
-          with:
-            context: .
-            file: .build/${{ env.LDAP_ADMIN_CONTAINER_NAME }}/Dockerfile
-            load: true
-            tags: webpwnized/mutillidae:${{ env.LDAP_ADMIN_CONTAINER_NAME }}
-  
-      - 
-          name: Run Trivy vulnerability scanner on LDAP Admin Container
-          uses: aquasecurity/trivy-action@master
-          with:
-            image-ref: 'webpwnized/mutillidae:${{ env.LDAP_ADMIN_CONTAINER_NAME }}'
-            format: 'sarif'
-            output: '${{ env.LDAP_ADMIN_CONTAINER_NAME }}-trivy-scan-results.sarif'
-  
-      - 
-          name: Upload LDAP Admin Container Trivy scan results to GitHub Security tab
-          uses: github/codeql-action/upload-sarif@main
-          with:
-            sarif_file: '${{ env.LDAP_ADMIN_CONTAINER_NAME }}-trivy-scan-results.sarif'
-            category: ${{ env.LDAP_ADMIN_CONTAINER_NAME }}
-  
-      -
-          name: Build and push LDAP Admin Container
-          uses: docker/build-push-action@master
-          with:
-            context: .
-            file: .build/${{ env.LDAP_ADMIN_CONTAINER_NAME }}/Dockerfile
-            push: true
-            tags: webpwnized/mutillidae:${{ env.LDAP_ADMIN_CONTAINER_NAME }}
-  
-      -
-          name: Build and push LDAP Admin Container with version number
-          uses: docker/build-push-action@master
-          with:
-            context: .
-            file: .build/${{ env.LDAP_ADMIN_CONTAINER_NAME }}/Dockerfile
-            push: true
-            tags: webpwnized/mutillidae:${{ env.LDAP_ADMIN_CONTAINER_NAME }}-${{ env.VERSION }}
-
-      # ----------------------------------------------------------------------------
-      # Web Container
-      # ----------------------------------------------------------------------------
-
-      -
-          name: Build and Export Web Container to Docker
-          uses: docker/build-push-action@master
-          with:
-            context: .
-            file: .build/${{ env.WEB_CONTAINER_NAME}}/Dockerfile
-            load: true
-            tags: webpwnized/mutillidae:${{ env.WEB_CONTAINER_NAME}}
-  
-      - 
-          name: Run Trivy vulnerability scanner on Web Container
-          uses: aquasecurity/trivy-action@master
-          with:
-            image-ref: 'webpwnized/mutillidae:${{ env.WEB_CONTAINER_NAME}}'
-            format: 'sarif'
-            output: '${{ env.WEB_CONTAINER_NAME}}-trivy-scan-results.sarif'
-  
-      - 
-          name: Upload Web Container Trivy scan results to GitHub Security tab
-          uses: github/codeql-action/upload-sarif@main
-          with:
-            sarif_file: '${{ env.WEB_CONTAINER_NAME}}-trivy-scan-results.sarif'
-            category: ${{ env.WEB_CONTAINER_NAME }}
-  
-      -
-          name: Build and push Web Container
-          uses: docker/build-push-action@master
-          with:
-            context: .
-            file: .build/${{ env.WEB_CONTAINER_NAME}}/Dockerfile
-            push: true
-            tags: webpwnized/mutillidae:${{ env.WEB_CONTAINER_NAME}}
-  
-      -
-          name: Build and push Web Container with version number
-          uses: docker/build-push-action@master
-          with:
-            context: .
-            file: .build/${{ env.WEB_CONTAINER_NAME}}/Dockerfile
-            push: true
-            tags: webpwnized/mutillidae:${{ env.WEB_CONTAINER_NAME}}-${{ env.VERSION }}
+          tags: webpwnized/mutillidae:${{ env.container_name }}-${{ env.VERSION }}
