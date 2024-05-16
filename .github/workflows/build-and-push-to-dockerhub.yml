@@ -4,8 +4,7 @@ name: build-scan-push-to-dockerhub
 # Specify when this workflow should run (on a push event to the 'main' branch).
 on:
   push:
-    branches:
-      - 'main'
+    branches: ["main"]
 
 # Define environment variables for better organization.
 env:
@@ -28,7 +27,7 @@ jobs:
     steps:
       # Step 1: Prepare the runner and check out the codebase.
       - name: Check out the codebase
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
 
       # Step 2: Get the version from a file and set it as an environment variable.
       - name: Get version from version file
@@ -38,15 +37,15 @@ jobs:
 
       # Step 3: Set up QEMU on the runner.
       - name: Set up QEMU on the runner
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@master
 
       # Step 4: Set up Docker Buildx on the runner.
       - name: Set up Docker Buildx on the runner
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@master
 
       # Step 5: Login to Docker Hub using secrets for authentication.
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@master
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -56,10 +55,10 @@ jobs:
       # ----------------------------------------------------------------------------
       - 
         name: Build and Export Database Container to Docker
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@master
         with:
           context: .
-          file: ./${{ env.DATABASE_CONTAINER_NAME }}/Dockerfile
+          file: .build/${{ env.DATABASE_CONTAINER_NAME }}/Dockerfile
           load: true
           tags: webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}
 
@@ -80,19 +79,19 @@ jobs:
 
       -
         name: Build and push Database container
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@master
         with:
           context: .
-          file: ./${{ env.DATABASE_CONTAINER_NAME }}/Dockerfile
+          file: .build/${{ env.DATABASE_CONTAINER_NAME }}/Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}
 
       -
         name: Build and push Database container with version number
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@master
         with:
           context: .
-          file: ./${{ env.DATABASE_CONTAINER_NAME }}/Dockerfile
+          file: .build/${{ env.DATABASE_CONTAINER_NAME }}/Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ env.DATABASE_CONTAINER_NAME }}-${{ env.VERSION }}
 
@@ -102,10 +101,10 @@ jobs:
 
       -
         name: Build and Export Database Admin Container to Docker
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@master
         with:
           context: .
-          file: ./${{ env.DATABASE_ADMIN_CONTAINER_NAME }}/Dockerfile
+          file: .build/${{ env.DATABASE_ADMIN_CONTAINER_NAME }}/Dockerfile
           load: true
           tags: webpwnized/mutillidae:${{ env.DATABASE_ADMIN_CONTAINER_NAME }}
 
@@ -126,19 +125,19 @@ jobs:
 
       -
         name: Build and push Database Admin Container
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@master
         with:
           context: .
-          file: ./${{ env.DATABASE_ADMIN_CONTAINER_NAME }}/Dockerfile
+          file: .build/${{ env.DATABASE_ADMIN_CONTAINER_NAME }}/Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ env.DATABASE_ADMIN_CONTAINER_NAME }}
 
       -
         name: Build and push Database Admin Container with version number
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@master
         with:
           context: .
-          file: ./${{ env.DATABASE_ADMIN_CONTAINER_NAME }}/Dockerfile
+          file: .build/${{ env.DATABASE_ADMIN_CONTAINER_NAME }}/Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ env.DATABASE_ADMIN_CONTAINER_NAME }}-${{ env.VERSION }}
 
@@ -148,10 +147,10 @@ jobs:
 
       -
           name: Build and Export LDAP Container to Docker
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@master
           with:
             context: .
-            file: ./${{ env.LDAP_CONTAINER_NAME }}/Dockerfile
+            file: .build/${{ env.LDAP_CONTAINER_NAME }}/Dockerfile
             load: true
             tags: webpwnized/mutillidae:${{ env.LDAP_CONTAINER_NAME }}
   
@@ -172,19 +171,19 @@ jobs:
   
       -
           name: Build and push LDAP Container
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@master
           with:
             context: .
-            file: ./${{ env.LDAP_CONTAINER_NAME }}/Dockerfile
+            file: .build/${{ env.LDAP_CONTAINER_NAME }}/Dockerfile
             push: true
             tags: webpwnized/mutillidae:${{ env.LDAP_CONTAINER_NAME }}
   
       -
           name: Build and push LDAP Container with version number
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@master
           with:
             context: .
-            file: ./${{ env.LDAP_CONTAINER_NAME }}/Dockerfile
+            file: .build/${{ env.LDAP_CONTAINER_NAME }}/Dockerfile
             push: true
             tags: webpwnized/mutillidae:${{ env.LDAP_CONTAINER_NAME }}-${{ env.VERSION }}
 
@@ -194,10 +193,10 @@ jobs:
 
       -
           name: Build and Export LDAP Admin Container to Docker
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@master
           with:
             context: .
-            file: ./${{ env.LDAP_ADMIN_CONTAINER_NAME }}/Dockerfile
+            file: .build/${{ env.LDAP_ADMIN_CONTAINER_NAME }}/Dockerfile
             load: true
             tags: webpwnized/mutillidae:${{ env.LDAP_ADMIN_CONTAINER_NAME }}
   
@@ -218,19 +217,19 @@ jobs:
   
       -
           name: Build and push LDAP Admin Container
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@master
           with:
             context: .
-            file: ./${{ env.LDAP_ADMIN_CONTAINER_NAME }}/Dockerfile
+            file: .build/${{ env.LDAP_ADMIN_CONTAINER_NAME }}/Dockerfile
             push: true
             tags: webpwnized/mutillidae:${{ env.LDAP_ADMIN_CONTAINER_NAME }}
   
       -
           name: Build and push LDAP Admin Container with version number
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@master
           with:
             context: .
-            file: ./${{ env.LDAP_ADMIN_CONTAINER_NAME }}/Dockerfile
+            file: .build/${{ env.LDAP_ADMIN_CONTAINER_NAME }}/Dockerfile
             push: true
             tags: webpwnized/mutillidae:${{ env.LDAP_ADMIN_CONTAINER_NAME }}-${{ env.VERSION }}
 
@@ -240,10 +239,10 @@ jobs:
 
       -
           name: Build and Export Web Container to Docker
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@master
           with:
             context: .
-            file: ./${{ env.WEB_CONTAINER_NAME}}/Dockerfile
+            file: .build/${{ env.WEB_CONTAINER_NAME}}/Dockerfile
             load: true
             tags: webpwnized/mutillidae:${{ env.WEB_CONTAINER_NAME}}
   
@@ -264,18 +263,18 @@ jobs:
   
       -
           name: Build and push Web Container
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@master
           with:
             context: .
-            file: ./${{ env.WEB_CONTAINER_NAME}}/Dockerfile
+            file: .build/${{ env.WEB_CONTAINER_NAME}}/Dockerfile
             push: true
             tags: webpwnized/mutillidae:${{ env.WEB_CONTAINER_NAME}}
   
       -
           name: Build and push Web Container with version number
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@master
           with:
             context: .
-            file: ./${{ env.WEB_CONTAINER_NAME}}/Dockerfile
+            file: .build/${{ env.WEB_CONTAINER_NAME}}/Dockerfile
             push: true
             tags: webpwnized/mutillidae:${{ env.WEB_CONTAINER_NAME}}-${{ env.VERSION }}

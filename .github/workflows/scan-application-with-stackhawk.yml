@@ -34,7 +34,7 @@ jobs:
     steps:
       # Step 1: Checkout code from the repository.
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
 
       # Step 2: Install LDAP Utilities
       - name: Install LDAP Utilities
@@ -49,7 +49,7 @@ jobs:
         run: |
 
           # Starting containers using Docker Compose.
-          docker-compose -f docker-compose.yml up -d;
+          docker-compose -f .build/docker-compose.yml up -d;
 
       # Step 4: Load Users into LDAP Directory
       - name: Load Users into LDAP Directory
@@ -59,7 +59,7 @@ jobs:
           # ldapadd will exit with non-zero exit code if user already exists in the directory
           # Use || true to force zero exit code
           CURRENT_DIRECTORY=$(pwd);
-          ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap:// -f $CURRENT_DIRECTORY/ldap/ldif/mutillidae.ldif || true;
+          ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap:// -f $CURRENT_DIRECTORY/.build/ldap/ldif/mutillidae.ldif || true;
 
       # Step 5: Run Database Build Script
       - name: Run Database Build Script
@@ -80,7 +80,7 @@ jobs:
 
       # Step 7: Run StackHawk Scan
       - name: Run StackHawk Scan
-        uses: stackhawk/hawkscan-action@v2
+        uses: stackhawk/hawkscan-action@main
         with:
           apiKey: ${{ secrets.HAWK_API_KEY }}     # Secret key for authentication.
           configurationFiles: .github/workflows/config/stackhawk.yml  # Path to configuration file.

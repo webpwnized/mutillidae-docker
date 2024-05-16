@@ -40,7 +40,6 @@ jobs:
       - name: Run KICS Scan with SARIF result
         uses: Checkmarx/kics-github-action@master
         with:
-          path: .
           # when provided with a directory on output_path
           # it will generate the specified reports file named 'results.{extension}'
           # in this example it will generate: results.sarif
@@ -48,6 +47,7 @@ jobs:
           platform_type: Dockerfile
           output_formats: 'sarif'
           ignore_on_exit: results
+          path: .build/database/Dockerfile, .build/database_admin/Dockerfile, .build/ldap/Dockerfile, .build/ldap_admin/Dockerfile, .build/www/Dockerfile
 
       - name: View Results
         run: cat results.sarif
