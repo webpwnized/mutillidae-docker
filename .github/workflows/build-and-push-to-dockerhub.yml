@@ -31,9 +31,12 @@ jobs:
 
       # Step 2: Get the version from a file and set it as an environment variable.
       - name: Get version from version file
+        id: get_version
         run: |
+          echo "Version: $(cat version)"
           VERSION=$(cat version)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+        shell: bash
 
       # Step 3: Set up QEMU on the runner.
       - name: Set up QEMU on the runner

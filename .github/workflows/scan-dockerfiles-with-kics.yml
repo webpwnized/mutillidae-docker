@@ -47,7 +47,7 @@ jobs:
           platform_type: Dockerfile
           output_formats: 'sarif'
           ignore_on_exit: results
-          path: .build/database/Dockerfile, .build/database_admin/Dockerfile, .build/ldap/Dockerfile, .build/ldap_admin/Dockerfile, .build/www/Dockerfile
+          path: '.build/database/Dockerfile,.build/database_admin/Dockerfile,.build/ldap/Dockerfile,.build/ldap_admin/Dockerfile,.build/www/Dockerfile'
 
       - name: View Results
         run: cat results.sarif
