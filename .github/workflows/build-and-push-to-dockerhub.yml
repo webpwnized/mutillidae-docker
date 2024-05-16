@@ -58,45 +58,53 @@ jobs:
       # ----------------------------------------------------------------------------
       # Loop Over Each Container
       # ----------------------------------------------------------------------------
+      - name: Print Current Container Name
+        id: print_current_container_name
+        run: |
+          echo ""
+          echo "STATUS: Currently working on container:${{ matrix.container_name }}"
+          echo ""
+        shell: bash
+
       - name: Build and Export Container to Docker
         uses: docker/build-push-action@master
         with:
           context: .
-          file: .build/${{ env.container_name }}/Dockerfile
+          file: .build/${{ matrix.container_name }}/Dockerfile
           load: true
-          tags: webpwnized/mutillidae:${{ env.container_name }}
+          tags: webpwnized/mutillidae:${{ matrix.container_name }}
 
       - name: Run Trivy vulnerability scanner on Container
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'webpwnized/mutillidae:${{ env.container_name }}'
+          image-ref: 'webpwnized/mutillidae:${{ matrix.container_name }}'
           format: 'sarif'
-          output: '${{ env.container_name }}-trivy-scan-results.sarif'
+          output: '${{ matrix.container_name }}-trivy-scan-results.sarif'
     
       - name: Print Trivy scan results to the console
         id: print_results
         run: |
-          cat '${{ env.container_name }}-trivy-scan-results.sarif'
+          cat '${{ matrix.container_name }}-trivy-scan-results.sarif'
         shell: bash
       
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@main
         with:
-          sarif_file: '${{ env.container_name }}-trivy-scan-results.sarif'
-          category: ${{ env.container_name }}
+          sarif_file: '${{ matrix.container_name }}-trivy-scan-results.sarif'
+          category: ${{ matrix.container_name }}
 
       - name: Build and push Container
         uses: docker/build-push-action@master
         with:
           context: .
-          file: .build/${{ env.container_name }}/Dockerfile
+          file: .build/${{ matrix.container_name }}/Dockerfile
           push: true
-          tags: webpwnized/mutillidae:${{ env.container_name }}
+          tags: webpwnized/mutillidae:${{ matrix.container_name }}
 
       - name: Build and push Container with version number
         uses: docker/build-push-action@master
         with:
           context: .
-          file: .build/${{ env.container_name }}/Dockerfile
+          file: .build/${{ matrix.container_name }}/Dockerfile
           push: true
-          tags: webpwnized/mutillidae:${{ env.container_name }}-${{ env.VERSION }}
+          tags: webpwnized/mutillidae:${{ matrix.container_name }}-${{ env.VERSION }}
