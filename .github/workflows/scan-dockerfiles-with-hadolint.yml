@@ -1,5 +1,5 @@
 # Define the name of the workflow.
-name: Scan Dockerfile with Hadolint
+name: Scan Dockerfile source code files with Hadolint
 
 # Define when the workflow should be triggered.
 on:
@@ -18,7 +18,7 @@ on:
 # Define the jobs that should be executed in this workflow.
 jobs:
   hadolint-job:
-    name: Hadolint Github Action
+    name: Hadolint GitHub Action
 
     # Specify the runner environment. Use the latest version of Ubuntu.
     runs-on: ubuntu-latest
@@ -29,6 +29,16 @@ jobs:
       contents: read         # Permission to read repository contents.
       security-events: write # Permission to write security events.
 
+    # Use matrix strategy to define multiple Dockerfiles to scan.
+    strategy:
+      matrix:
+        dockerfile:
+          - .build/database/Dockerfile
+          - .build/database_admin/Dockerfile
+          - .build/ldap/Dockerfile
+          - .build/ldap_admin/Dockerfile
+          - .build/www/Dockerfile
+
     # Define the steps that should be executed in this job.
     steps:
       - name: Checkout code
@@ -37,17 +47,24 @@ jobs:
         # Action to check out the code from the repository.
         # This step fetches the codebase from the GitHub repository.
 
+      - name: Set Dockerfile base name
+        id: set-base-name
+        run: |
+          echo "basename=$(basename -s .Dockerfile ${{ matrix.dockerfile }})" >> $GITHUB_ENV
+        # Step: Set Dockerfile base name
+        # Extracts the base name from the Dockerfile path and sets it as an environment variable.
+
       - name: Run Hadolint Scan with SARIF result
         uses: hadolint/hadolint-action@v3.1.0
-        with:   
-          dockerfile: Dockerfile
-          # Specify the name of the Dockerfile to be scanned.
+        with:
+          dockerfile: ${{ matrix.dockerfile }}
+          # Specify the Dockerfile from the matrix to be scanned.
           
-          recursive: true
-          # Enable recursive scanning to include subdirectories.
+          recursive: false
+          # Disable recursive scanning as each Dockerfile is specified directly.
       
-          output-file: hadolint-results.sarif
-          # Define the name of the SARIF format output file.
+          output-file: hadolint-results-${{ env.basename }}.sarif
+          # Define the name of the SARIF format output file using the Dockerfile base name.
       
           no-fail: true
           # Continue the workflow even if there are issues found (no-fail set to true).
@@ -57,11 +74,15 @@ jobs:
       
           failure-threshold: 'error'
           # Define the threshold for failure based on severity (e.g., 'error').
-      
+
+                # View results
+      - name: View Results
+        run: cat hadolint-results-${{ env.basename }}.sarif
+
       - name: Upload Results to GitHub Advanced Security Dashboard
         uses: github/codeql-action/upload-sarif@main
         with:
-          sarif_file: hadolint-results.sarif
+          sarif_file: hadolint-results-${{ env.basename }}.sarif
           category: "Hadolint Dockerfile Scan"
         if: always()
         # Upload the SARIF file with scan results to the GitHub Advanced Security Dashboard.
