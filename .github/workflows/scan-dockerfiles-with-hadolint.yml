@@ -13,7 +13,7 @@ on:
 
   # Scan mainline branches (main and development) and report all findings.
   push:
-    branches: ["main", "development"]
+    branches: ["development"]
 
 # Define the jobs that should be executed in this workflow.
 jobs:
@@ -47,12 +47,14 @@ jobs:
         # Action to check out the code from the repository.
         # This step fetches the codebase from the GitHub repository.
 
-      - name: Set Dockerfile base name
-        id: set-base-name
+      - name: Set Dockerfile directory name
+        id: set-dir-name
         run: |
-          echo "basename=$(basename -s .Dockerfile ${{ matrix.dockerfile }})" >> $GITHUB_ENV
-        # Step: Set Dockerfile base name
-        # Extracts the base name from the Dockerfile path and sets it as an environment variable.
+          dir_name=$(dirname ${{ matrix.dockerfile }})
+          base_dir_name=$(basename $dir_name)
+          echo "BASEDIR=$base_dir_name" >> $GITHUB_ENV
+        # Step: Set Dockerfile directory name
+        # Extracts the directory name from the Dockerfile path and sets it as an environment variable.
 
       - name: Run Hadolint Scan with SARIF result
         uses: hadolint/hadolint-action@v3.1.0
@@ -63,8 +65,8 @@ jobs:
           recursive: false
           # Disable recursive scanning as each Dockerfile is specified directly.
       
-          output-file: hadolint-results-${{ env.basename }}.sarif
-          # Define the name of the SARIF format output file using the Dockerfile base name.
+          output-file: hadolint-results-${{ env.BASEDIR }}.sarif
+          # Define the name of the SARIF format output file using the Dockerfile directory name.
       
           no-fail: true
           # Continue the workflow even if there are issues found (no-fail set to true).
@@ -75,14 +77,13 @@ jobs:
           failure-threshold: 'error'
           # Define the threshold for failure based on severity (e.g., 'error').
 
-                # View results
       - name: View Results
-        run: cat hadolint-results-${{ env.basename }}.sarif
+        run: cat hadolint-results-${{ env.BASEDIR }}.sarif
 
       - name: Upload Results to GitHub Advanced Security Dashboard
         uses: github/codeql-action/upload-sarif@main
         with:
-          sarif_file: hadolint-results-${{ env.basename }}.sarif
+          sarif_file: hadolint-results-${{ env.BASEDIR }}.sarif
           category: "Hadolint Dockerfile Scan"
         if: always()
         # Upload the SARIF file with scan results to the GitHub Advanced Security Dashboard.
