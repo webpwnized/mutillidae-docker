@@ -79,8 +79,9 @@ RUN rm /var/www/mutillidae/.htaccess && \
     sed -i "s/define('DB_USERNAME', 'root');/define('DB_USERNAME', '$DATABASE_USERNAME');/" /var/www/mutillidae/includes/database-config.inc && \
     sed -i "s/define('DB_PASSWORD', 'mutillidae');/define('DB_PASSWORD', '$DATABASE_PASSWORD');/" /var/www/mutillidae/includes/database-config.inc && \
     sed -i "s/define('DB_NAME', 'mutillidae');/define('DB_NAME', '$DATABASE_NAME');/" /var/www/mutillidae/includes/database-config.inc && \
-    sed -i "s/define('DB_PORT', 3306);/define('DB_PORT', $DATABASE_PORT);/" /var/www/mutillidae/includes/database-config.inc
-
+    sed -i "s/define('DB_PORT', 3306);/define('DB_PORT', $DATABASE_PORT);/" /var/www/mutillidae/includes/database-config.inc && \
+    sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc
+    
 # ######################## #
 # Configure the web server #
 # ######################## #
@@ -95,8 +96,7 @@ RUN rm /var/www/mutillidae/.htaccess && \
 # Enable Apache TLS modules
 # Disable the default site because it intercepts calls to Mutillidae made by IP address
 # Enable the mutillidae site
-RUN sed -i 's/127.0.0.1/directory/' /var/www/mutillidae/includes/ldap-config.inc && \
-    cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.crt /etc/ssl/certs/mutillidae-selfsigned.crt  && \
+RUN cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.crt /etc/ssl/certs/mutillidae-selfsigned.crt  && \
     cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.key /etc/ssl/private/mutillidae-selfsigned.key && \
     mkdir /etc/apache2/conf/ && \
     cp /var/www/mutillidae/configuration/apache-configuration/conf/error-pages.conf /etc/apache2/conf/error-pages.conf && \
