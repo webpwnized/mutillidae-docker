@@ -74,6 +74,7 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
 
 # Remove the .htaccess file since the containers will use container network security rather than htaccess access control
 # Change the database configuration variables in the mutillidae project, allowing the user to override using build arguments
+# Change the hostname of the ldap server to the docker ldap hostname
 RUN rm /var/www/mutillidae/.htaccess && \
     sed -i "s/define('DB_HOST', '127.0.0.1');/define('DB_HOST', '$DATABASE_HOST');/" /var/www/mutillidae/includes/database-config.inc && \
     sed -i "s/define('DB_USERNAME', 'root');/define('DB_USERNAME', '$DATABASE_USERNAME');/" /var/www/mutillidae/includes/database-config.inc && \
@@ -86,7 +87,6 @@ RUN rm /var/www/mutillidae/.htaccess && \
 # Configure the web server #
 # ######################## #
 
-# Change the hostname of the ldap server to the docker ldap hostname
 # Copy the TLS certificate files from mutillidae into cert directories
 # Copy the host entries into the host file
 # Copy the Apache configuration from Mutillidae into Apache conf
