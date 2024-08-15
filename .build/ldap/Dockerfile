@@ -1,13 +1,14 @@
 # Container image: webpwnized/mutillidae:ldap
 # From project root, build with: 
-#   docker build --file .build/ldap/Dockerfile --tag webpwnized/mutillidae:ldap .
+#   docker build --file ./Dockerfile --tag webpwnized/mutillidae:ldap .build/ldap/
+#   
 #       docker build: This is the command to build a Docker image.
 #       --file .build/ldap/Dockerfile: This specifies the path to the Dockerfile you want to use. In this case, it's .build/ldap/Dockerfile.
 #       --tag webpwnized/mutillidae:ldap: This tags the resulting Docker image with a name (webpwnized/mutillidae) and a tag (ldap).
 #       .: This is the build context. It indicates the directory to be used for the build process. The Docker daemon will send this directory's contents to the Docker engine. In this case, the dot represents the current directory.
 #
 # From project root, run with:
-#   docker-compose --file .build/docker-compose.yml up --detach
+#   docker compose -f .build/docker-compose.yml up --build --detach
 #       docker-compose: This is the Docker Compose command-line tool used for managing multi-container Docker applications.
 #       --file .build/docker-compose.yml: This option (--file or -f) specifies the path to the docker-compose.yml file. In this case, it’s located at .build/docker-compose.yml.
 #       up: This subcommand tells Docker Compose to create and start the containers defined in the docker-compose.yml file. If the containers do not exist, they will be created. If they already exist, they will be started.
@@ -36,3 +37,4 @@ ENV LDAP_TLS="false"
 #    apt-get -y autoremove && \
 #    apt-get clean && \
 #    rm -rf /var/lib/apt/lists/*
+

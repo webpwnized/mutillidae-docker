@@ -16,7 +16,9 @@ The following video tutorials explain how to bring up Mutillidae on a set of 5 c
 
 ## TLDR
 
-	docker-compose up -d
+	git clone https://github.com/webpwnized/mutillidae-docker.git
+	cd mutillidae-docker
+	docker compose -f .build/docker-compose.yml up --build --detach
 
 Generate the database with the first link in the warning webpage.
 
@@ -38,7 +40,9 @@ The Dockerfile files in each directory contain the instructions to build each co
 
 To build the containers, if neccesary, and bring the containers up, run the following command.
 
-	docker-compose up -d
+	git clone https://github.com/webpwnized/mutillidae-docker.git
+	cd mutillidae-docker
+	docker compose -f .build/docker-compose.yml up --build --detach
 	
 Once the containers are running, the following services are available on localhost.
 

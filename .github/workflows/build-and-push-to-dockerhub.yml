@@ -57,7 +57,10 @@ jobs:
 
       # ----------------------------------------------------------------------------
       # Loop Over Each Container
+      # Equivalent to 
+      #   docker build --file ./Dockerfile --tag webpwnized/mutillidae:${{ matrix.container_name }} .build/${{ matrix.container_name }}/
       # ----------------------------------------------------------------------------
+      
       - name: Print Current Container Name
         id: print_current_container_name
         run: |
@@ -69,8 +72,8 @@ jobs:
       - name: Build and Export Container to Docker
         uses: docker/build-push-action@master
         with:
-          context: .
-          file: .build/${{ matrix.container_name }}/Dockerfile
+          context: .build/${{ matrix.container_name }}/
+          file: ./Dockerfile
           load: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}
 
@@ -96,15 +99,15 @@ jobs:
       - name: Build and push Container
         uses: docker/build-push-action@master
         with:
-          context: .
-          file: .build/${{ matrix.container_name }}/Dockerfile
+          context: .build/${{ matrix.container_name }}/
+          file: ./Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}
 
       - name: Build and push Container with version number
         uses: docker/build-push-action@master
         with:
-          context: .
-          file: .build/${{ matrix.container_name }}/Dockerfile
+          context: .build/${{ matrix.container_name }}/
+          file: ./Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}-${{ env.VERSION }}

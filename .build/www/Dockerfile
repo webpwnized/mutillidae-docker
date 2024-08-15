@@ -1,13 +1,13 @@
 # Container image: webpwnized/mutillidae:www
 # From project root, build with: 
-#   docker build --file .build/www/Dockerfile --tag webpwnized/mutillidae:www .
+#   docker build --file ./Dockerfile --tag webpwnized/mutillidae:www .build/www/
 #       docker build: This is the command to build a Docker image.
 #       --file .build/www/Dockerfile: This specifies the path to the Dockerfile you want to use. In this case, it's .build/www/Dockerfile.
 #       --tag webpwnized/mutillidae:www: This tags the resulting Docker image with a name (webpwnized/mutillidae) and a tag (www).
 #       .: This is the build context. It indicates the directory to be used for the build process. The Docker daemon will send this directory's contents to the Docker engine. In this case, the dot represents the current directory.
 #
 # From project root, run with:
-#   docker-compose --file .build/docker-compose.yml up --detach
+#   docker compose -f .build/docker-compose.yml up --build --detach
 #       docker-compose: This is the Docker Compose command-line tool used for managing multi-container Docker applications.
 #       --file .build/docker-compose.yml: This option (--file or -f) specifies the path to the docker-compose.yml file. In this case, it’s located at .build/docker-compose.yml.
 #       up: This subcommand tells Docker Compose to create and start the containers defined in the docker-compose.yml file. If the containers do not exist, they will be created. If they already exist, they will be started.
@@ -87,26 +87,32 @@ RUN rm /var/www/mutillidae/.htaccess && \
 # Configure the web server #
 # ######################## #
 
+# Create directories for the Apache configuration and error pages
+RUN mkdir /etc/apache2/conf/ && \
+    mkdir /etc/apache2/error-pages/
+
 # Copy the TLS certificate files from mutillidae into cert directories
 # Copy the host entries into the host file
 # Copy the Apache configuration from Mutillidae into Apache conf
+# Copy the error pages from Mutillidae into Apache error pages
+# Copy the aliases configuration into Apache conf-available
+# Copy the Mutillidae site configuration into Apache sites-available
+COPY ./configuration/https-certificate/mutillidae-selfsigned.crt /etc/ssl/certs/mutillidae-selfsigned.crt
+COPY ./configuration/https-certificate/mutillidae-selfsigned.key /etc/ssl/private/mutillidae-selfsigned.key
+COPY ./configuration/apache-configuration/conf/error-pages.conf /etc/apache2/conf/error-pages.conf
+COPY ./configuration/apache-configuration/conf/headers.conf /etc/apache2/conf/headers.conf
+COPY ./configuration/apache-configuration/error-pages/404.html /etc/apache2/error-pages/404.html
+COPY ./configuration/apache-configuration/error-pages/oops.jpg /etc/apache2/error-pages/oops.jpg
+COPY ./configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf
+COPY ./configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf
+
 # Change the localhost references to listen on external network interfaces
 # Unlink access log and error log so the log files can be written in the container
 # Make sure access log and error log exist
 # Enable Apache TLS modules
 # Disable the default site because it intercepts calls to Mutillidae made by IP address
 # Enable the mutillidae site
-RUN cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.crt /etc/ssl/certs/mutillidae-selfsigned.crt  && \
-    cp /var/www/mutillidae/configuration/https-certificate/mutillidae-selfsigned.key /etc/ssl/private/mutillidae-selfsigned.key && \
-    mkdir /etc/apache2/conf/ && \
-    cp /var/www/mutillidae/configuration/apache-configuration/conf/error-pages.conf /etc/apache2/conf/error-pages.conf && \
-    cp /var/www/mutillidae/configuration/apache-configuration/conf/headers.conf /etc/apache2/conf/headers.conf && \
-    mkdir /etc/apache2/error-pages/ && \
-    cp /var/www/mutillidae/configuration/apache-configuration/error-pages/404.html /etc/apache2/error-pages/404.html && \
-    cp /var/www/mutillidae/configuration/apache-configuration/error-pages/oops.jpg /etc/apache2/error-pages/oops.jpg && \
-    cp /var/www/mutillidae/configuration/apache-configuration/conf-available/aliases.conf /etc/apache2/conf-available/aliases.conf && \
-    cp /var/www/mutillidae/configuration/apache-configuration/sites-available/mutillidae.conf /etc/apache2/sites-available/mutillidae.conf && \
-    sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf && \
+RUN sed -i 's/127.0.0.1/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf && \
     sed -i 's/127.0.0.2/0.0.0.0/' /etc/apache2/sites-available/mutillidae.conf && \
     unlink /var/log/apache2/access.log && \
     unlink /var/log/apache2/error.log && \
