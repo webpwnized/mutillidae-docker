@@ -40,13 +40,12 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
         shell: bash
 
-      - name: Print Working Directory
+      - name: Print Directory Information
         id: print_current_directory
         run: |
-          echo ""
           echo "STATUS: Current directory:$(pwd)"
-          echo "STATUS: Directory contents:$(ls -la)"
-          echo ""
+          echo "STATUS: Directory contents:"
+          echo "$(ls -la)"
         shell: bash
 
       # Step 3: Set up QEMU on the runner.
@@ -81,7 +80,7 @@ jobs:
       - name: Build and Load Container
         uses: docker/build-push-action@master
         with:
-          context: .
+          context: .build/${{ matrix.container_name }}/
           file: .build/${{ matrix.container_name }}/Dockerfile
           load: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}
@@ -108,7 +107,7 @@ jobs:
       - name: Push Container
         uses: docker/build-push-action@master
         with:
-          context: .
+          context: .build/${{ matrix.container_name }}/
           file: .build/${{ matrix.container_name }}/Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}
@@ -116,7 +115,7 @@ jobs:
       - name: Push Container with version number
         uses: docker/build-push-action@master
         with:
-          context: .
+          context: .build/${{ matrix.container_name }}/
           file: .build/${{ matrix.container_name }}/Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}-${{ env.VERSION }}

@@ -1,6 +1,6 @@
 # Container image: webpwnized/mutillidae:ldap_admin
 # From project root, build with: 
-#   docker build --file ./Dockerfile --tag webpwnized/mutillidae:ldap_admin .build/ldap_admin/
+#   docker build --file .build/ldap_admin/Dockerfile --tag webpwnized/mutillidae:ldap_admin .build/ldap_admin/
 #   
 #       docker build: This is the command to build a Docker image.
 #       --file .build/ldap_admin/Dockerfile: This specifies the path to the Dockerfile you want to use. In this case, it's .build/ldap_admin/Dockerfile.

@@ -1,6 +1,6 @@
 # Container image: webpwnized/mutillidae:database
 # From project root, build with: 
-#   docker build --file ./Dockerfile --tag webpwnized/mutillidae:database .build/database/
+#   docker build --file .build/database/Dockerfile --tag webpwnized/mutillidae:database .build/database/
 #       docker build: This is the command to build a Docker image.
 #       --file .build/database/Dockerfile: This specifies the path to the Dockerfile you want to use. In this case, it's .build/database/Dockerfile.
 #       --tag webpwnized/mutillidae:database: This tags the resulting Docker image with a name (webpwnized/mutillidae) and a tag (database).

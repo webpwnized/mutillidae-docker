@@ -1,6 +1,6 @@
 # Container image: webpwnized/mutillidae:ldap
 # From project root, build with: 
-#   docker build --file ./Dockerfile --tag webpwnized/mutillidae:ldap .build/ldap/
+#   docker build --file .build/ldap/Dockerfile --tag webpwnized/mutillidae:ldap .build/ldap/
 #   
 #       docker build: This is the command to build a Docker image.
 #       --file .build/ldap/Dockerfile: This specifies the path to the Dockerfile you want to use. In this case, it's .build/ldap/Dockerfile.
