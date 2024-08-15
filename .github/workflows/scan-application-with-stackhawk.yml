@@ -49,7 +49,7 @@ jobs:
         run: |
 
           # Starting containers using Docker Compose.
-          docker compose -f .build/docker-compose.yml up --build --detach
+          docker compose --file .build/docker-compose.yml up --build --detach
 
       # Step 4: Load Users into LDAP Directory
       - name: Load Users into LDAP Directory
@@ -78,7 +78,13 @@ jobs:
           # This should return the index.php home page content
           curl http://127.0.0.1:8888/;
 
-      # Step 7: Run StackHawk Scan
+      # Step 7: Set up Java for StackHawk
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # Step 8: Run StackHawk Scan
       - name: Run StackHawk Scan
         uses: stackhawk/hawkscan-action@main
         with:
