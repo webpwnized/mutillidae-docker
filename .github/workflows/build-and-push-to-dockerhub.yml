@@ -45,6 +45,7 @@ jobs:
         run: |
           echo ""
           echo "STATUS: Current directory:$(pwd)"
+          echo "STATUS: Directory contents:$(ls -la)"
           echo ""
         shell: bash
 
