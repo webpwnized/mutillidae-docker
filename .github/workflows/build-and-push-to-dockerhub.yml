@@ -81,8 +81,8 @@ jobs:
       - name: Build and Load Container
         uses: docker/build-push-action@master
         with:
-          context: .build/${{ matrix.container_name }}/
-          file: Dockerfile
+          context: .
+          file: .build/${{ matrix.container_name }}/Dockerfile
           load: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}
 
@@ -108,15 +108,15 @@ jobs:
       - name: Push Container
         uses: docker/build-push-action@master
         with:
-          context: .build/${{ matrix.container_name }}/
-          file: Dockerfile
+          context: .
+          file: .build/${{ matrix.container_name }}/Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}
 
       - name: Push Container with version number
         uses: docker/build-push-action@master
         with:
-          context: .build/${{ matrix.container_name }}/
-          file: Dockerfile
+          context: .
+          file: .build/${{ matrix.container_name }}/Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}-${{ env.VERSION }}
