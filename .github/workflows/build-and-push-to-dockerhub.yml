@@ -82,7 +82,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           context: .build/${{ matrix.container_name }}/
-          file: ./Dockerfile
+          file: Dockerfile
           load: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}
 
@@ -109,7 +109,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           context: .build/${{ matrix.container_name }}/
-          file: ./Dockerfile
+          file: Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}
 
@@ -117,6 +117,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           context: .build/${{ matrix.container_name }}/
-          file: ./Dockerfile
+          file: Dockerfile
           push: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}-${{ env.VERSION }}
