@@ -40,6 +40,14 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
         shell: bash
 
+      - name: Print Working Directory
+        id: print_current_directory
+        run: |
+          echo ""
+          echo "STATUS: Current directory:$(pwd)"
+          echo ""
+        shell: bash
+
       # Step 3: Set up QEMU on the runner.
       - name: Set up QEMU on the runner
         uses: docker/setup-qemu-action@master
@@ -69,7 +77,7 @@ jobs:
           echo ""
         shell: bash
 
-      - name: Build and Export Container to Docker
+      - name: Build and Load Container
         uses: docker/build-push-action@master
         with:
           context: .build/${{ matrix.container_name }}/
@@ -96,7 +104,7 @@ jobs:
           sarif_file: '${{ matrix.container_name }}-trivy-scan-results.sarif'
           category: ${{ matrix.container_name }}
 
-      - name: Build and push Container
+      - name: Push Container
         uses: docker/build-push-action@master
         with:
           context: .build/${{ matrix.container_name }}/
@@ -104,7 +112,7 @@ jobs:
           push: true
           tags: webpwnized/mutillidae:${{ matrix.container_name }}
 
-      - name: Build and push Container with version number
+      - name: Push Container with version number
         uses: docker/build-push-action@master
         with:
           context: .build/${{ matrix.container_name }}/
