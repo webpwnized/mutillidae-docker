@@ -40,12 +40,16 @@ There are five containers in this project.
 
 The Dockerfile files in each directory contain the instructions to build each container. The docker-compose.yml file contains the instructions to set up networking for the container, create volumes, and kick off the builds specified in the Dockerfile files.
 
+### Building the Containers
+
 To build the containers, if necessary, and bring the containers up, run the following command.
 
 	git clone https://github.com/webpwnized/mutillidae-docker.git
 	cd mutillidae-docker
 	docker compose -f .build/docker-compose.yml up --build --detach
-	
+
+### Running Services
+
 Once the containers are running, the following services are available on localhost.
 
 - Port 80, 8080: Mutillidae HTTP web interface
@@ -54,11 +58,15 @@ Once the containers are running, the following services are available on localho
 - Port 443: HTTPS web interface
 - Port 389: LDAP interface
 
+### Website URL
+
 The web application should be running at localhost
 
 [http://127.0.0.1/](http://127.0.0.1/)
 
-The first time the webpage is accessed, a warning webpage will be displayed referencing the database cannot be found. This is the expected behaviour. Just use the link to "rebuild" the database and it will start working normally.
+Note: The first time the webpage is accessed, a warning webpage will be displayed referencing the database cannot be found. This is the expected behaviour. Just use the link to "rebuild" the database and it will start working normally.
+
+### Automatically building the database
 
 Alternatively, you can trigger the database build.
 
@@ -66,6 +74,8 @@ Alternatively, you can trigger the database build.
 # Requesting Mutillidae database be built.
 curl http://127.0.0.1/set-up-database.php;
 ```
+
+### Populating the LDAP database
 
 The LDAP database is empty upon build. Add users to the LDAP database using the following command.
 
@@ -77,6 +87,8 @@ sudo apt-get install -y ldap-utils
 # Add users to the LDAP database
 ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap://localhost:389 -f .build/ldap/configuration/ldif/mutillidae.ldif
 ```
+
+### Automatically testing the web interface
 
 You can test if the web site is responsive
 
