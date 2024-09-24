@@ -44,9 +44,11 @@ The Dockerfile files in each directory contain the instructions to build each co
 
 To build the containers, if necessary, and bring the containers up, run the following command.
 
-	git clone https://github.com/webpwnized/mutillidae-docker.git
-	cd mutillidae-docker
-	docker compose -f .build/docker-compose.yml up --build --detach
+```bash
+git clone https://github.com/webpwnized/mutillidae-docker.git
+cd mutillidae-docker
+docker compose -f .build/docker-compose.yml up --build --detach
+```
 
 ### Running Services
 
@@ -66,7 +68,7 @@ The web application should be running at localhost
 
 Note: The first time the webpage is accessed, a warning webpage will be displayed referencing the database cannot be found. This is the expected behaviour. Just use the link to "rebuild" the database and it will start working normally.
 
-### Automatically building the database
+### Using a script to build the database
 
 Alternatively, you can trigger the database build.
 
@@ -88,7 +90,7 @@ sudo apt-get install -y ldap-utils
 ldapadd -c -x -D "cn=admin,dc=mutillidae,dc=localhost" -w mutillidae -H ldap://localhost:389 -f .build/ldap/configuration/ldif/mutillidae.ldif
 ```
 
-### Automatically testing the web interface
+### Using a script to test the web interface
 
 You can test if the web site is responsive
 
