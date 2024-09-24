@@ -49,6 +49,15 @@ git clone https://github.com/webpwnized/mutillidae-docker.git
 cd mutillidae-docker
 docker compose -f .build/docker-compose.yml up --build --detach
 ```
+### Website URL
+
+The web application should be running at localhost
+
+[http://127.0.0.1/](http://127.0.0.1/)
+
+Note: The first time the webpage is accessed, a warning webpage will be displayed referencing the database cannot be found. This is the expected behaviour. Just use the link to "rebuild" the database and it will start working normally.
+
+## TMI
 
 ### Running Services
 
@@ -59,14 +68,6 @@ Once the containers are running, the following services are available on localho
 - Port 82: LDAP Admin web interface
 - Port 443: HTTPS web interface
 - Port 389: LDAP interface
-
-### Website URL
-
-The web application should be running at localhost
-
-[http://127.0.0.1/](http://127.0.0.1/)
-
-Note: The first time the webpage is accessed, a warning webpage will be displayed referencing the database cannot be found. This is the expected behaviour. Just use the link to "rebuild" the database and it will start working normally.
 
 ### Using a script to build the database
 
