@@ -4,7 +4,12 @@
 #       docker build: This is the command to build a Docker image.
 #       --file .build/www/Dockerfile: This specifies the path to the Dockerfile you want to use. In this case, it's .build/www/Dockerfile.
 #       --tag webpwnized/mutillidae:www: This tags the resulting Docker image with a name (webpwnized/mutillidae) and a tag (www).
-#       .: This is the build context. It indicates the directory to be used for the build process. The Docker daemon will send this directory's contents to the Docker engine. In this case, the dot represents the current directory.
+#       .build/www/: This is the build context. It indicates the directory to be used for the build process. The Docker daemon will send this directory's contents to the Docker engine. In this case, it represents the build context.
+#
+#   To enable error reporting during the build, pass the --build-arg ENABLE_ERROR_REPORTING=true argument:
+#       docker build --file .build/www/Dockerfile --tag webpwnized/mutillidae:www --build-arg ENABLE_ERROR_REPORTING=true .build/www/
+#           --build-arg ENABLE_ERROR_REPORTING=true: This optional argument enables error reporting during the PHP build process by setting error_reporting to E_ALL and display_errors to On.
+#           By default, error reporting is disabled (ENABLE_ERROR_REPORTING=false).
 #
 # From project root, run with:
 #   docker compose --file .build/docker-compose.yml up --build --detach
@@ -12,6 +17,7 @@
 #       --file .build/docker-compose.yml: This option (--file or -f) specifies the path to the docker-compose.yml file. In this case, it’s located at .build/docker-compose.yml.
 #       up: This subcommand tells Docker Compose to create and start the containers defined in the docker-compose.yml file. If the containers do not exist, they will be created. If they already exist, they will be started.
 #       --detach: This option (--detach or -d) runs the containers in the background (detached mode). When you use this option, Docker Compose will start the containers and return control to the terminal, allowing you to continue using it for other commands or tasks.
+
 
 # Start with recent version of PHP with Apache 
 # https://hub.docker.com/_/php?tab=tags&page=1&ordering=last_updated&name=apache
@@ -23,6 +29,7 @@ ARG DATABASE_USERNAME="root"
 ARG DATABASE_PASSWORD="mutillidae"
 ARG DATABASE_NAME="mutillidae"
 ARG DATABASE_PORT="3306"
+ARG ENABLE_ERROR_REPORTING=false	# The value can be true or false. The default is false.
 
 # ######################### #
 # Install software packages #
@@ -67,6 +74,12 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
     sed -i 's/allow_url_include = Off/allow_url_include = On/g' /usr/local/etc/php/php.ini && \
     sed -i 's/allow_url_fopen = Off/allow_url_fopen = On/g' /usr/local/etc/php/php.ini && \
     sed -i 's/expose_php = Off/expose_php = On/g' /usr/local/etc/php/php.ini
+
+# Conditionally enable error reporting if ENABLE_ERROR_REPORTING is true
+RUN if [ "$ENABLE_ERROR_REPORTING" = "true" ]; then \
+    sed -i 's/^error_reporting = .*/error_reporting = E_ALL/' /usr/local/etc/php/php.ini && \
+    sed -i 's/^display_errors = .*/display_errors = On/' /usr/local/etc/php/php.ini; \
+    fi
 
 # ######################### #
 # Configure the application #
