@@ -1,84 +1,102 @@
 # Documentation: https://github.com/compose-spec/compose-spec/blob/master/spec.md
-# Purpose: Build local containers for the Mutillidae environment
+# Purpose: Build and manage local containers for the Mutillidae environment using Docker Compose.
+
+# To build and start the containers (forcing a rebuild), use the following command from the project root:
+#   docker compose --file .build/docker-compose.yml up --build --detach
+#   
+# Explanation of flags:
+#   --file .build/docker-compose.yml: Specifies the location of the docker-compose.yml file.
+#   up: Tells Docker Compose to create and start the containers defined in the compose file.
+#   --build: Forces Docker to rebuild the images for the services, ensuring that any updates are incorporated.
+#   --detach (-d): Runs the containers in detached mode (in the background).
+
+# To start the containers without rebuilding the images, run:
+#   docker compose --file .build/docker-compose.yml up --detach
+#   
+# This command skips the image rebuild and starts the existing containers defined in the docker-compose file.
 
 services:
 
+  # Service 1: Database Service
   database:
-    container_name: database
-    image: webpwnized/mutillidae:database
-    build: 
-        context: ./database
-        dockerfile: Dockerfile
+    container_name: database  # Sets the container name as 'database'
+    image: webpwnized/mutillidae:database  # Pulls a prebuilt image for the database
+    build:
+      context: ./database  # Directory context for the Dockerfile
+      dockerfile: Dockerfile  # Specifies the Dockerfile to build the database image (if needed)
     networks:
-      - datanet   
+      - datanet  # Connects the container to the 'datanet' network
 
+  # Service 2: Database Admin Interface (e.g., phpMyAdmin)
   database_admin:
-    container_name: database_admin
+    container_name: database_admin  # Sets the container name as 'database_admin'
     depends_on:
-      - database
-    image: webpwnized/mutillidae:database_admin
+      - database  # Ensures that the 'database' service is up before starting this container
+    image: webpwnized/mutillidae:database_admin  # Pulls a prebuilt image for database admin
     build:
-        context: ./database_admin
-        dockerfile: Dockerfile
+      context: ./database_admin  # Directory context for building the database admin service
+      dockerfile: Dockerfile  # Specifies the Dockerfile for building the admin service
     ports:
-      - 127.0.0.1:81:80
+      - 127.0.0.1:81:80  # Maps port 81 on localhost to port 80 inside the container for web access
     networks:
-      - datanet   
+      - datanet  # Connects the container to the 'datanet' network
 
-# Port 8888 is for StackHawk to scan
+  # Service 3: Web Application (Mutillidae)
+  # Port 8888 is specifically used for StackHawk scans.
   www:
-    container_name: www
+    container_name: www  # Container name for the web service
     depends_on:
-      - database
-      - directory
-    image: webpwnized/mutillidae:www
+      - database  # Ensures the 'database' is up before starting this container
+      - directory  # Ensures the 'directory' (LDAP server) is up before this service starts
+    image: webpwnized/mutillidae:www  # Prebuilt image for the Mutillidae web application
     build:
-        context: ./www
-        dockerfile: Dockerfile
+      context: ./www  # Directory context for building the web service
+      dockerfile: Dockerfile  # Dockerfile used to build the web service image
     ports:
-      - 127.0.0.1:80:80
-      - 127.0.0.1:8888:80
-      - 127.0.0.1:443:443
-      # - 127.0.0.2:80:80
-      # - 127.0.0.2:8888:80
-      # - 127.0.0.2:443:443
+      - 127.0.0.1:80:80  # Maps port 80 on localhost to port 80 inside the container (for HTTP)
+      - 127.0.0.1:8888:80  # Maps port 8888 on localhost to port 80 for StackHawk scanning
+      - 127.0.0.1:443:443  # Maps port 443 on localhost to port 443 inside the container (for HTTPS)
     networks:
-      - datanet
-      - ldapnet
+      - datanet  # Connects to the 'datanet' network for database communication
+      - ldapnet  # Connects to the 'ldapnet' network for LDAP communication
 
+  # Service 4: LDAP Directory Service
   directory:
-    container_name: directory
-    image: webpwnized/mutillidae:ldap
+    container_name: directory  # Container name for the LDAP directory service
+    image: webpwnized/mutillidae:ldap  # Prebuilt image for the LDAP server
     build:
-        context: ./ldap
-        dockerfile: Dockerfile
+      context: ./ldap  # Directory context for building the LDAP service
+      dockerfile: Dockerfile  # Dockerfile used to build the LDAP service
     volumes:
-      - ldap_data:/var/lib/ldap
-      - ldap_config:/etc/ldap/slapd.d
+      - ldap_data:/var/lib/ldap  # Mounts a volume to persist LDAP data
+      - ldap_config:/etc/ldap/slapd.d  # Mounts a volume to persist LDAP configuration
     ports:
-      - 127.0.0.1:389:389
+      - 127.0.0.1:389:389  # Maps port 389 (LDAP) on localhost to port 389 inside the container
     networks:
-      - ldapnet
+      - ldapnet  # Connects to the 'ldapnet' network for LDAP communication
 
+  # Service 5: LDAP Admin Interface (e.g., phpLDAPadmin)
   directory_admin:
-    container_name: directory_admin
+    container_name: directory_admin  # Container name for LDAP admin
     depends_on:
-      - directory
-    image: webpwnized/mutillidae:ldap_admin
+      - directory  # Ensures the 'directory' service is up before starting this service
+    image: webpwnized/mutillidae:ldap_admin  # Prebuilt image for LDAP admin
     build:
-        context: ./ldap_admin          
-        dockerfile: Dockerfile
+      context: ./ldap_admin  # Directory context for building the LDAP admin service
+      dockerfile: Dockerfile  # Dockerfile used to build the LDAP admin image
     ports:
-      - 127.0.0.1:82:80
+      - 127.0.0.1:82:80  # Maps port 82 on localhost to port 80 inside the container for admin access
     networks:
-      - ldapnet
+      - ldapnet  # Connects to the 'ldapnet' network
 
-# Volumes to persist data used by the LDAP server
+# Volumes:
+# These volumes persist data used by the LDAP service, ensuring that data is not lost when containers are removed.
 volumes:
-  ldap_data:
-  ldap_config:
-  
-# Create network segments for the containers to use
+  ldap_data:  # Volume for storing LDAP data (used by the 'directory' service)
+  ldap_config:  # Volume for storing LDAP configuration (used by the 'directory' service)
+
+# Networks:
+# The networks define separate communication channels for the services.
 networks:
-    datanet:
-    ldapnet:
+  datanet:  # Network for the database and web application to communicate
+  ldapnet:  # Network for LDAP-related services

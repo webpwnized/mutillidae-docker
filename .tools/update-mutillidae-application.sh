@@ -55,8 +55,11 @@ update_mutillidae() {
     # Install Git and clone the Mutillidae repository
     run_command_in_container $container_name "apt update && apt install --no-install-recommends -y git" "Install Git and update APT"
 
-    # Remove existing Mutillidae source directory and clone new code
+    # Remove existing Mutillidae source directory and clone new code from the development branch
     run_command_in_container $container_name "rm -rf $mutillidae_src; cd /tmp; git clone https://github.com/webpwnized/mutillidae.git $temp_dir" "Clone Mutillidae repository"
+
+    # Checkout the development branch in the cloned repository
+    run_command_in_container $container_name "cd $temp_dir && git checkout development" "Checkout development branch"
 
     # Copy new source code to Mutillidae directory
     run_command_in_container $container_name "cp -r $temp_dir/src $mutillidae_src" "Copy Mutillidae source code"
