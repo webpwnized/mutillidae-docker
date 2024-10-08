@@ -1,14 +1,13 @@
 # Documentation: https://github.com/compose-spec/compose-spec/blob/master/spec.md
 # Purpose: Build and manage local containers for the Mutillidae environment using Docker Compose.
 
-# To build and start the containers (forcing a rebuild), use the following command from the project root:
-#   docker compose --file .build/docker-compose.yml up --build --detach
-#   
-# Explanation of flags:
-#   --file .build/docker-compose.yml: Specifies the location of the docker-compose.yml file.
-#   up: Tells Docker Compose to create and start the containers defined in the compose file.
-#   --build: Forces Docker to rebuild the images for the services, ensuring that any updates are incorporated.
-#   --detach (-d): Runs the containers in detached mode (in the background).
+# To forcefully build the images without using cached layers and then start the containers, run the following commands from the project root:
+#   docker compose --file .build/docker-compose.yml build --no-cache
+#   docker compose --file .build/docker-compose.yml up --detach
+#
+# Explanation:
+#   build --no-cache: Rebuilds the images for the services without using any cached layers, ensuring a fresh build.
+#   up --detach (-d): Starts the containers in detached mode (running in the background).
 
 # To start the containers without rebuilding the images, run:
 #   docker compose --file .build/docker-compose.yml up --detach
