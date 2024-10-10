@@ -7,6 +7,25 @@ log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1"
 }
 
+# Function to display help message
+show_help() {
+    echo "Usage: $0 <branch>"
+    echo ""
+    echo "This script updates the Mutillidae web application from a specified Git branch."
+    echo ""
+    echo "Options:"
+    echo "  <branch>       The name of the branch to update from (e.g., feature/my-feature)."
+    echo ""
+    echo "Description:"
+    echo "  The script updates the Mutillidae application running inside the 'www' Docker container."
+    echo "  It clones the specified branch of the Mutillidae repository, replaces the current source,"
+    echo "  and updates the application configuration to connect to the correct database and LDAP server."
+    echo ""
+    echo "Example:"
+    echo "  ./update_containers_feature_branch.sh feature/my-new-feature"
+    exit 0
+}
+
 # Function to check if the 'www' container is running
 is_container_running() {
     local container_name="www"
@@ -49,17 +68,18 @@ update_mutillidae() {
     local database_name="mutillidae"
     local database_port="3306"
     local ldap_server_hostname="directory"
+    local branch=$1
 
     log "Updating Mutillidae application in the running '$container_name' container."
 
     # Install Git and clone the Mutillidae repository
     run_command_in_container $container_name "apt update && apt install --no-install-recommends -y git" "Install Git and update APT"
 
-    # Remove existing Mutillidae source directory and clone new code from the development branch
+    # Remove existing Mutillidae source directory and clone new code from the specified branch
     run_command_in_container $container_name "rm -rf $mutillidae_src; cd /tmp; git clone https://github.com/webpwnized/mutillidae.git $temp_dir" "Clone Mutillidae repository"
 
-    # Checkout the development branch in the cloned repository
-    run_command_in_container $container_name "cd $temp_dir && git checkout development" "Checkout development branch"
+    # Checkout the specified branch in the cloned repository
+    run_command_in_container $container_name "cd $temp_dir && git checkout $branch" "Checkout branch $branch"
 
     # Copy new source code to Mutillidae directory
     run_command_in_container $container_name "cp -r $temp_dir/src $mutillidae_src" "Copy Mutillidae source code"
@@ -93,13 +113,19 @@ update_mutillidae() {
 
 # Main script logic
 main() {
+    if [ $# -ne 1 ]; then
+        show_help
+    fi
+
+    local branch=$1
+
     if ! is_container_running; then
         log "The 'www' container is not running, so the application cannot be updated."
         exit 1
     fi
 
-    update_mutillidae
+    update_mutillidae $branch
 }
 
 # Call the main function
-main
+main "$@"
