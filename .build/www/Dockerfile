@@ -29,7 +29,7 @@ ARG DATABASE_USERNAME="root"
 ARG DATABASE_PASSWORD="mutillidae"
 ARG DATABASE_NAME="mutillidae"
 ARG DATABASE_PORT="3306"
-ARG ENABLE_ERROR_REPORTING=false	# The value can be true or false. The default is false.
+ARG ENABLE_ERROR_REPORTING=true	# The value can be true or false. The default is true.
 
 # ######################### #
 # Install software packages #
@@ -52,11 +52,14 @@ RUN apt-get update && \
     apt-get install --no-install-recommends -y libonig-dev && docker-php-ext-install mbstring && \
     apt-get install --no-install-recommends -y libcurl4-openssl-dev && docker-php-ext-install curl && \ 
     docker-php-ext-install mysqli && \
-    apt-get install --no-install-recommends -y dnsutils ntp iputils-ping git && \
+    apt-get install --no-install-recommends -y dnsutils git iputils-ping ntp && \
     cd /tmp && \
     git clone https://github.com/webpwnized/mutillidae.git mutillidae && \
     cp -r mutillidae/src /var/www/mutillidae && \
     rm -rf /tmp/mutillidae && \ 
+    mkdir -p /var/www/mutillidae/data /var/www/mutillidae/passwords && \
+    chown -R www-data:www-data /var/www/mutillidae/data /var/www/mutillidae/passwords && \
+    chmod -R 775 /var/www/mutillidae/data /var/www/mutillidae/passwords && \
     apt-get remove --no-install-recommends -y git && \
     apt-get -y upgrade && \
     apt-get -y autoremove && \

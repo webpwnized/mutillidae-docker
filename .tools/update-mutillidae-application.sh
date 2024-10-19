@@ -22,7 +22,7 @@ show_help() {
     echo "  and updates the application configuration to connect to the correct database and LDAP server."
     echo ""
     echo "Example:"
-    echo "  ./update_containers_feature_branch.sh feature/my-new-feature"
+    echo "  $0 feature/my-new-feature"
     exit 0
 }
 
