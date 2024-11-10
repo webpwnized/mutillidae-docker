@@ -38,29 +38,39 @@ done
 # Check if Docker is installed and running
 if ! command -v docker &> /dev/null; then
     handle_error "Docker is not installed or not in PATH. Please install Docker."
+    exit 1
 fi
 
 # Clean up Docker resources
 print_message "Cleaning up Docker resources for Mutillidae"
 
-# Stop and remove all containers
-print_message "Stopping and removing all containers"
-docker stop $(docker ps -a -q) || handle_error "Failed to stop containers"
-docker rm $(docker ps -a -q) || handle_error "Failed to remove containers"
+# Stop and remove all containers, with checks to ensure there are containers to stop
+CONTAINERS=$(docker ps -a -q)
+if [[ -n "$CONTAINERS" ]]; then
+    print_message "Stopping and removing all containers"
+    docker rm -f $CONTAINERS || handle_error "Failed to remove containers"
+else
+    print_message "No containers to remove"
+fi
 
-# Remove all images
-print_message "Removing all images"
-docker rmi $(docker images -a -q) || handle_error "Failed to remove images"
+# Remove all images, with a check to ensure there are images to remove
+IMAGES=$(docker images -a -q)
+if [[ -n "$IMAGES" ]]; then
+    print_message "Removing all images"
+    docker rmi -f $IMAGES || handle_error "Failed to remove images"
+else
+    print_message "No images to remove"
+fi
 
-# Prune containers, images, volumes, networks
-print_message "Pruning containers, images, volumes, networks"
-docker container prune -f || handle_error "Failed to prune containers"
-docker image prune --all -f || handle_error "Failed to prune images"
-docker volume prune -f || handle_error "Failed to prune volumes"
-docker network prune -f || handle_error "Failed to prune networks"
+# Prune containers, images, volumes, and networks with error handling
+print_message "Pruning containers, images, volumes, and networks"
+docker container prune -f || true
+docker image prune --all -f || true
+docker volume prune -f || true
+docker network prune -f || true
 
-# System-wide prune
-print_message "Pruning system"
+# System-wide prune to ensure complete cleanup
+print_message "Performing system-wide prune"
 docker system prune --all --volumes -f || handle_error "Failed to prune system"
 
 # Success message
