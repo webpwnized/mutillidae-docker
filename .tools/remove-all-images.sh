@@ -1,11 +1,16 @@
 #!/bin/bash
-# Purpose: Clean up Docker resources for Mutillidae application
+# Purpose: Clean up all Docker resources for Mutillidae application
 # Usage: ./remove-all-images.sh [options]
 
 # Function to print messages with a timestamp
 print_message() {
-    echo ""
     echo "$(date +"%Y-%m-%d %H:%M:%S") - $1"
+}
+
+# Function to handle errors
+handle_error() {
+    print_message "Error: $1"
+    exit 1
 }
 
 # Function to display help message
@@ -16,14 +21,8 @@ show_help() {
     echo "  -h, --help     Display this help message."
     echo ""
     echo "Description:"
-    echo "This script is used to clean up Docker resources for the Mutillidae application."
-    echo "It stops and removes all containers, removes all images, and prunes all volumes and networks."
+    echo "This script stops and removes all Docker containers and images for the Mutillidae application, then prunes unused volumes and networks."
     exit 0
-}
-
-# Function to handle errors
-handle_error() {
-    print_message "Error: $1"
 }
 
 # Parse options
@@ -38,13 +37,12 @@ done
 # Check if Docker is installed and running
 if ! command -v docker &> /dev/null; then
     handle_error "Docker is not installed or not in PATH. Please install Docker."
-    exit 1
 fi
 
-# Clean up Docker resources
-print_message "Cleaning up Docker resources for Mutillidae"
+# Clean up all Docker resources
+print_message "Cleaning up all Docker resources for Mutillidae"
 
-# Stop and remove all containers, with checks to ensure there are containers to stop
+# Stop and remove all containers
 CONTAINERS=$(docker ps -a -q)
 if [[ -n "$CONTAINERS" ]]; then
     print_message "Stopping and removing all containers"
@@ -53,7 +51,7 @@ else
     print_message "No containers to remove"
 fi
 
-# Remove all images, with a check to ensure there are images to remove
+# Remove all images
 IMAGES=$(docker images -a -q)
 if [[ -n "$IMAGES" ]]; then
     print_message "Removing all images"
@@ -62,16 +60,10 @@ else
     print_message "No images to remove"
 fi
 
-# Prune containers, images, volumes, and networks with error handling
-print_message "Pruning containers, images, volumes, and networks"
-docker container prune -f || true
-docker image prune --all -f || true
-docker volume prune -f || true
-docker network prune -f || true
-
-# System-wide prune to ensure complete cleanup
-print_message "Performing system-wide prune"
-docker system prune --all --volumes -f || handle_error "Failed to prune system"
+# Prune unused resources
+print_message "Pruning unused volumes and networks"
+docker volume prune -f || handle_error "Failed to prune volumes"
+docker network prune -f || handle_error "Failed to prune networks"
 
 # Success message
-print_message "Docker resources for Mutillidae cleaned up successfully"
+print_message "All Docker resources cleaned up successfully"
