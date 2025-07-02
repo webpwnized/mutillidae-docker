@@ -1,8 +1,7 @@
 #!/bin/bash
-# Purpose: Push feature branch, merge into development branch, push development branch
-# Usage: ./push-development-branch.sh <feature_branch> <version> <annotation>
-# Description: This script pushes the feature branch, merges it into the development branch, and
-# calls another script 'git.sh' with the version and annotation to push both branches.
+# Purpose: Push feature branch only
+# Usage: ./push-feature-branch.sh <feature_branch> <version> <annotation>
+# Description: This script pushes the feature branch using 'git.sh'.
 
 # Function to print messages with a timestamp
 print_message() {
@@ -18,8 +17,7 @@ show_help() {
     echo "  -h, --help     Display this help message."
     echo ""
     echo "Description:"
-    echo "This script pushes the feature branch, merges it into the development branch,"
-    echo "and calls another script 'git.sh' with the version and annotation."
+    echo "This script pushes the feature branch using 'git.sh'."
     exit 0
 }
 
@@ -54,6 +52,14 @@ if [[ ! -x "$GIT_SCRIPT" ]]; then
     handle_error "'git.sh' script not found or not executable"
 fi
 
+# Check if the feature branch exists
+if ! git show-ref --verify --quiet refs/heads/"$FEATURE_BRANCH"; then
+    handle_error "Feature branch '$FEATURE_BRANCH' does not exist. Create it using:
+    
+    git checkout -b $FEATURE_BRANCH
+    git push -u origin $FEATURE_BRANCH"
+fi
+
 # Push feature branch
 print_message "Checking out feature branch: $FEATURE_BRANCH"
 git checkout "$FEATURE_BRANCH" || handle_error "Failed to checkout feature branch: $FEATURE_BRANCH"
@@ -61,22 +67,9 @@ git checkout "$FEATURE_BRANCH" || handle_error "Failed to checkout feature branc
 print_message "Pushing feature branch: $FEATURE_BRANCH"
 "$GIT_SCRIPT" "$VERSION" "$ANNOTATION" || handle_error "Failed to push feature branch using git.sh"
 
-# Merge feature branch into development branch
-print_message "Checking out development branch"
-git checkout development || handle_error "Failed to checkout development branch"
-
-print_message "Merging feature branch '$FEATURE_BRANCH' into 'development'"
-git merge "$FEATURE_BRANCH" || handle_error "Failed to merge feature branch into development branch"
-
-# Push development branch
-print_message "Pushing development branch"
-"$GIT_SCRIPT" "$VERSION" "$ANNOTATION" || handle_error "Failed to push development branch using git.sh"
-
-print_message "Checking out feature branch: $FEATURE_BRANCH"
-git checkout "$FEATURE_BRANCH" || handle_error "Failed to checkout feature branch: $FEATURE_BRANCH"
-
 # Show git status
 print_message "Git status"
 git status || handle_error "Failed to show git status"
 
 print_message "Script completed successfully"
+exit 0

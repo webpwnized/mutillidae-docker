@@ -1,131 +1,144 @@
 #!/bin/bash
-# This is a Bash script for updating the Mutillidae web application.
-# It must be run from the 'mutillidae-docker' directory.
+# Secure Mutillidae updater with getopt named option parsing
 
-# Function to log messages to the console
+set -euo pipefail
+
+# Log helper
 log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1"
 }
 
-# Function to display help message
+# Show usage
 show_help() {
-    echo "Usage: $0 <branch>"
-    echo ""
-    echo "This script updates the Mutillidae web application from a specified Git branch."
+    echo "Usage: $0 -b <branch>"
     echo ""
     echo "Options:"
-    echo "  <branch>       The name of the branch to update from (e.g., feature/my-feature)."
-    echo ""
-    echo "Description:"
-    echo "  The script updates the Mutillidae application running inside the 'www' Docker container."
-    echo "  It clones the specified branch of the Mutillidae repository, replaces the current source,"
-    echo "  and updates the application configuration to connect to the correct database and LDAP server."
+    echo "  -b, --branch   Git branch name to deploy (required)"
+    echo "  -h, --help     Show help and exit"
     echo ""
     echo "Example:"
-    echo "  $0 feature/my-new-feature"
-    exit 0
+    echo "  $0 -b feature/my-fix"
 }
 
-# Function to check if the 'www' container is running
+# Check if container is running
 is_container_running() {
     local container_name="www"
-    if [ "$(docker ps -q -f name=$container_name)" ]; then
-        return 0  # Container is running
-    else
-        return 1  # Container is not running
-    fi
+    [ "$(docker ps -q -f name=$container_name)" ] && return 0 || return 1
 }
 
-# Function to check the exit code and return 1 if not 0
-check_exit_code() {
-    local exit_code=$?
-    if [ $exit_code -ne 0 ]; then
-        return 1
-    fi
-    return 0
-}
-
-# Function to run a command inside the container with logging
+# Run command in container
 run_command_in_container() {
     local container_name=$1
     local command=$2
-    local step_description=$3
+    local desc=$3
 
-    log "Executing step: $step_description"
-    docker exec -it $container_name sh -c "$command"
-    check_exit_code || { log "Step failed: $step_description"; exit 1; }
-    log "Step succeeded: $step_description"
+    log "Executing: $desc"
+    docker exec -i "$container_name" sh -c "$command"
+    [ $? -eq 0 ] || { log "Failed: $desc"; exit 1; }
+    log "Success: $desc"
 }
 
-# Function to update Mutillidae application inside the container
+# Cleanup flag
+CLEANUP_ENABLED=false
+
+# Cleanup handler
+cleanup() {
+    if [ "$CLEANUP_ENABLED" = true ]; then
+        local container_name="www"
+        local temp_dir="/tmp/mutillidae"
+        log "Running cleanup handler..."
+        docker exec -i "$container_name" sh -c "rm -rf $temp_dir" || true
+        log "Cleanup completed."
+    fi
+}
+
+trap cleanup EXIT
+
+# Update Mutillidae
 update_mutillidae() {
     local container_name="www"
     local temp_dir="/tmp/mutillidae"
-    local mutillidae_src="/var/www/mutillidae"
-    local database_host="database"
-    local database_username="root"
-    local database_password="mutillidae"
-    local database_name="mutillidae"
-    local database_port="3306"
-    local ldap_server_hostname="directory"
+    local src_dir="/var/www/mutillidae"
     local branch=$1
 
-    log "Updating Mutillidae application in the running '$container_name' container."
+    local db_host="database"
+    local db_user="root"
+    local db_pass="mutillidae"
+    local db_name="mutillidae"
+    local db_port="3306"
+    local ldap_host="directory"
 
-    # Install Git and clone the Mutillidae repository
-    run_command_in_container $container_name "apt update && apt install --no-install-recommends -y git" "Install Git and update APT"
+    log "Updating Mutillidae in '$container_name' with branch '$branch'"
 
-    # Remove existing Mutillidae source directory and clone new code from the specified branch
-    run_command_in_container $container_name "rm -rf $mutillidae_src; cd /tmp; git clone https://github.com/webpwnized/mutillidae.git $temp_dir" "Clone Mutillidae repository"
+    run_command_in_container "$container_name" "apt update && apt install --no-install-recommends -y git" "Install Git"
 
-    # Checkout the specified branch in the cloned repository
-    run_command_in_container $container_name "cd $temp_dir && git checkout $branch" "Checkout branch $branch"
+    run_command_in_container "$container_name" "rm -rf $temp_dir && cd /tmp && git clone https://github.com/webpwnized/mutillidae.git $temp_dir" "Clone repo"
 
-    # Copy new source code to Mutillidae directory
-    run_command_in_container $container_name "cp -r $temp_dir/src $mutillidae_src" "Copy Mutillidae source code"
+    run_command_in_container "$container_name" "cd $temp_dir && git checkout $branch" "Checkout branch '$branch'"
 
-    # Clean up temporary directory
-    run_command_in_container $container_name "rm -rf $temp_dir" "Clean up temporary directory"
+    run_command_in_container "$container_name" "rm -rf $src_dir && cp -r $temp_dir/src $src_dir" "Replace source"
 
-    # Remove the .htaccess file
-    run_command_in_container $container_name "rm /var/www/mutillidae/.htaccess" "Remove the .htaccess file"
+    run_command_in_container "$container_name" "rm -f $src_dir/.htaccess" "Remove .htaccess"
 
-    # Update the database hostname
-    run_command_in_container $container_name "sed -i \"s/define('DB_HOST', '127.0.0.1');/define('DB_HOST', '$database_host');/\" /var/www/mutillidae/includes/database-config.inc" "Update the database hostname"
+    run_command_in_container "$container_name" "sed -i \"s/define('DB_HOST', '127.0.0.1');/define('DB_HOST', '$db_host');/\" $src_dir/includes/database-config.inc" "Update DB_HOST"
+    run_command_in_container "$container_name" "sed -i \"s/define('DB_USERNAME', 'root');/define('DB_USERNAME', '$db_user');/\" $src_dir/includes/database-config.inc" "Update DB_USERNAME"
+    run_command_in_container "$container_name" "sed -i \"s/define('DB_PASSWORD', 'mutillidae');/define('DB_PASSWORD', '$db_pass');/\" $src_dir/includes/database-config.inc" "Update DB_PASSWORD"
+    run_command_in_container "$container_name" "sed -i \"s/define('DB_NAME', 'mutillidae');/define('DB_NAME', '$db_name');/\" $src_dir/includes/database-config.inc" "Update DB_NAME"
+    run_command_in_container "$container_name" "sed -i \"s/define('DB_PORT', 3306);/define('DB_PORT', $db_port);/\" $src_dir/includes/database-config.inc" "Update DB_PORT"
 
-    # Update the database username
-    run_command_in_container $container_name "sed -i \"s/define('DB_USERNAME', 'root');/define('DB_USERNAME', '$database_username');/\" /var/www/mutillidae/includes/database-config.inc" "Update the database username"
+    run_command_in_container "$container_name" "sed -i 's/127.0.0.1/$ldap_host/' $src_dir/includes/ldap-config.inc" "Update LDAP hostname"
 
-    # Update the database password
-    run_command_in_container $container_name "sed -i \"s/define('DB_PASSWORD', 'mutillidae');/define('DB_PASSWORD', '$database_password');/\" /var/www/mutillidae/includes/database-config.inc" "Update the database password"
-
-    # Update the database name
-    run_command_in_container $container_name "sed -i \"s/define('DB_NAME', 'mutillidae');/define('DB_NAME', '$database_name');/\" /var/www/mutillidae/includes/database-config.inc" "Update the database name"
-
-    # Update the database port
-    run_command_in_container $container_name "sed -i \"s/define('DB_PORT', 3306);/define('DB_PORT', $database_port);/\" /var/www/mutillidae/includes/database-config.inc" "Update the database port"
-    
-    # Update the LDAP server hostname
-    run_command_in_container $container_name "sed -i 's/127.0.0.1/$ldap_server_hostname/' /var/www/mutillidae/includes/ldap-config.inc" "Update the LDAP server hostname"
-        
-    log "Mutillidae application update completed successfully."
+    log "Mutillidae update complete!"
 }
 
-# Main script logic
+# Main with getopt parsing
 main() {
-    if [ $# -ne 1 ]; then
+    local branch=""
+
+    # Use getopt for -b/--branch and -h/--help
+    OPTIONS=$(getopt -o b:h --long branch:,help -- "$@") || {
         show_help
-    fi
+        exit 1
+    }
 
-    local branch=$1
+    eval set -- "$OPTIONS"
 
-    if ! is_container_running; then
-        log "The 'www' container is not running, so the application cannot be updated."
+    while true; do
+        case "$1" in
+            -b|--branch)
+                branch="$2"
+                shift 2
+                ;;
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            --)
+                shift
+                break
+                ;;
+            *)
+                show_help
+                exit 1
+                ;;
+        esac
+    done
+
+    if [[ -z "$branch" ]]; then
+        log "Error: --branch is required."
+        show_help
         exit 1
     fi
 
-    update_mutillidae $branch
+    if ! is_container_running; then
+        log "Error: 'www' container is not running."
+        exit 1
+    fi
+
+    CLEANUP_ENABLED=true
+
+    update_mutillidae "$branch"
 }
 
-# Call the main function
 main "$@"
+

@@ -1,8 +1,7 @@
 #!/bin/bash
-# Purpose: Push feature branch, merge into development branch, push development branch
-# Usage: ./push-development-branch.sh <feature_branch> <version> <annotation>
-# Description: This script pushes the feature branch, merges it into the development branch, and
-# calls another script 'git.sh' with the version and annotation to push both branches.
+# Purpose: Push feature branch, merge into development branch, push development branch, merge into main branch, push main branch
+# Usage: ./push-main-branch.sh <feature_branch> <version> <annotation>
+# Description: This script pushes the feature branch, merges it into the development branch, pushes the development branch, merges it into the main branch, and pushes the main branch.
 
 # Function to print messages with a timestamp
 print_message() {
@@ -19,7 +18,7 @@ show_help() {
     echo ""
     echo "Description:"
     echo "This script pushes the feature branch, merges it into the development branch,"
-    echo "and calls another script 'git.sh' with the version and annotation."
+    echo "pushes the development branch, merges it into the main branch, and pushes the main branch."
     exit 0
 }
 
@@ -71,6 +70,17 @@ git merge "$FEATURE_BRANCH" || handle_error "Failed to merge feature branch into
 # Push development branch
 print_message "Pushing development branch"
 "$GIT_SCRIPT" "$VERSION" "$ANNOTATION" || handle_error "Failed to push development branch using git.sh"
+
+# Merge development branch into main branch
+print_message "Checking out main branch"
+git checkout main || handle_error "Failed to checkout main branch"
+
+print_message "Merging development branch into 'main'"
+git merge development || handle_error "Failed to merge development branch into main branch"
+
+# Push main branch
+print_message "Pushing main branch"
+"$GIT_SCRIPT" "$VERSION" "$ANNOTATION" || handle_error "Failed to push main branch using git.sh"
 
 print_message "Checking out feature branch: $FEATURE_BRANCH"
 git checkout "$FEATURE_BRANCH" || handle_error "Failed to checkout feature branch: $FEATURE_BRANCH"
