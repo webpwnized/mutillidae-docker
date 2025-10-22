@@ -38,7 +38,7 @@ ARG ENABLE_ERROR_REPORTING=true	# The value can be true or false. The default is
 # Update software packages
 # Install PHP requirements used by Mutillidae II: php-xml, php-mbstring, php-curl, php-mysql, php-ldap
 # Install nslookup to enable the command injection vulnerabilities
-# Install ntp package for Lab #12
+# Install ntpsec package for Lab #12
 # Install ping package for Lab #13
 # Install git
 # Copy the mutillidae project to Apache web files directory
@@ -52,7 +52,7 @@ RUN apt-get update && \
     apt-get install --no-install-recommends -y libonig-dev && docker-php-ext-install mbstring && \
     apt-get install --no-install-recommends -y libcurl4-openssl-dev && docker-php-ext-install curl && \ 
     docker-php-ext-install mysqli && \
-    apt-get install --no-install-recommends -y dnsutils git iputils-ping ntp && \
+    apt-get install --no-install-recommends -y dnsutils git iputils-ping ntpsec && \
     cd /tmp && \
     git clone https://github.com/webpwnized/mutillidae.git mutillidae && \
     cp -r mutillidae/src /var/www/mutillidae && \
