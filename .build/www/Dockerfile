@@ -46,14 +46,34 @@ ARG ENABLE_ERROR_REPORTING=true	# The value can be true or false. The default is
 # Patch the container
 # Remove the apt-get lists after installation
 # Add the user for Lab #17
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y libldap2-dev && docker-php-ext-install ldap && \
-    apt-get install --no-install-recommends -y libxml2-dev && docker-php-ext-install xml && \
-    apt-get install --no-install-recommends -y libonig-dev && docker-php-ext-install mbstring && \
-    apt-get install --no-install-recommends -y libcurl4-openssl-dev && docker-php-ext-install curl && \ 
-    docker-php-ext-install mysqli && \
-    apt-get install --no-install-recommends -y dnsutils git iputils-ping ntp && \
-    cd /tmp && \
+
+RUN apt-get update
+
+RUN apt-get install --no-install-recommends -y libldap2-dev
+RUN docker-php-ext-install ldap
+
+RUN apt-get install --no-install-recommends -y libxml2-dev
+RUN docker-php-ext-install xml
+
+RUN apt-get install --no-install-recommends -y libonig-dev
+RUN docker-php-ext-install mbstring
+
+RUN apt-get install --no-install-recommends -y libcurl4-openssl-dev
+RUN docker-php-ext-install curl
+
+RUN docker-php-ext-install mysqli
+
+RUN apt-get install --no-install-recommends -y dnsutils git iputils-ping ntp
+
+# RUN apt-get update && \
+#     apt-get install --no-install-recommends -y libldap2-dev && docker-php-ext-install ldap && \
+#     apt-get install --no-install-recommends -y libxml2-dev && docker-php-ext-install xml && \
+#     apt-get install --no-install-recommends -y libonig-dev && docker-php-ext-install mbstring && \
+#     apt-get install --no-install-recommends -y libcurl4-openssl-dev && docker-php-ext-install curl && \ 
+#     docker-php-ext-install mysqli && \
+#     apt-get install --no-install-recommends -y dnsutils git iputils-ping ntp &&
+
+RUN cd /tmp && \
     git clone https://github.com/webpwnized/mutillidae.git mutillidae && \
     cp -r mutillidae/src /var/www/mutillidae && \
     rm -rf /tmp/mutillidae && \ 
