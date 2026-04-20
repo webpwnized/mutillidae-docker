@@ -63,7 +63,7 @@ RUN docker-php-ext-install curl
 
 RUN docker-php-ext-install mysqli
 
-RUN apt-get install --no-install-recommends -y dnsutils git iputils-ping ntp
+RUN apt-get install --no-install-recommends -y dnsutils git iputils-ping ntpsec
 
 # RUN apt-get update && \
 #     apt-get install --no-install-recommends -y libldap2-dev && docker-php-ext-install ldap && \
